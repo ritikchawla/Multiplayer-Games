@@ -6,6 +6,9 @@ import Knight from "../classes/chess/Knight";
 import Bishop from "../classes/chess/Bishop";
 import King from "../classes/chess/King";
 import Queen from "../classes/chess/Queen";
+import ChessGame from "../classes/chess/ChessGame";
+
+const game = new ChessGame();
 
 const Chessscreen = ({ getChessGameObj }) => {
 	const [board, setBoard] = useState([
@@ -14,7 +17,7 @@ const Chessscreen = ({ getChessGameObj }) => {
 			new Knight("black", 0, 1),
 			new Bishop("black", 0, 2),
 			new King("black", 0, 3),
-			new Queen("black", 0, 6),
+			new Queen("black", 0, 4),
 			new Bishop("black", 0, 5),
 			new Knight("black", 0, 6),
 			new Rook("black", 0, 7)
@@ -55,13 +58,14 @@ const Chessscreen = ({ getChessGameObj }) => {
 		]
 	]);
 
-	const game = getChessGameObj();
-
 	const showMoves = (row, col) => {
 		let tempBoard = board.map(b => b);
-
 		game.showValidMoves(tempBoard, row, col);
 
+		// game.select(tempBoard, row, col);
+		console.log("cells clicked = ", game.cellsClicked);
+		console.log("numClicks = ", game.numClicks);
+		console.log("turn = ", game.turn);
 		setBoard(tempBoard);
 	};
 
@@ -75,15 +79,22 @@ const Chessscreen = ({ getChessGameObj }) => {
 								(ri + ci) % 2 === 0 ? "rgb(195,105,56)" : "rgb(239, 206,163)";
 
 							let piece = board[ri][ci];
-							let blueDot;
+							let blueDot, redDot;
 
 							if (piece === "dot") {
 								blueDot = true;
 							}
 
+							if (piece !== 0) {
+								if (piece.isBeingAttacked) {
+									redDot = true;
+								}
+							}
+
 							return (
 								<Cell
 									blueDot={blueDot}
+									redDot={redDot}
 									board={board}
 									row={ri}
 									col={ci}

@@ -13,7 +13,7 @@ class Rook extends Piece {
 					break;
 				} else {
 					this.moves[String(this.row) + "," + String(c)] = true;
-					board[this.row][c] = "dot";
+					board[this.row][c].isBeingAttacked = true;
 					break;
 				}
 			}
@@ -28,7 +28,7 @@ class Rook extends Piece {
 					break;
 				} else {
 					this.moves[String(this.row) + "," + String(c)] = true;
-					board[this.row][c] = "dot";
+					board[this.row][c].isBeingAttacked = true;
 					break;
 				}
 			}
@@ -44,7 +44,7 @@ class Rook extends Piece {
 					break;
 				} else {
 					this.moves[String(r) + "," + String(this.col)] = true;
-					board[r][this.col] = "dot";
+					board[r][this.col].isBeingAttacked = true;
 					break;
 				}
 			}
@@ -59,7 +59,7 @@ class Rook extends Piece {
 					break;
 				} else {
 					this.moves[String(r) + "," + String(this.col)] = true;
-					board[r][this.col] = "dot";
+					board[r][this.col].isBeingAttacked = true;
 					break;
 				}
 			}

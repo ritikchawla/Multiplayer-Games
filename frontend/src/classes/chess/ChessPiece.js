@@ -4,7 +4,13 @@ class Piece {
 		this.row = row;
 		this.col = col;
 		this.moves = {};
+		this.isBeingAttacked = false;
 	}
+
+	setRowCol = (row, col) => {
+		this.row = row;
+		this.col = col;
+	};
 }
 
 export default Piece;

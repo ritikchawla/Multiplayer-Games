@@ -15,7 +15,7 @@ class Bishop extends Piece {
 					return;
 				} else {
 					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c] = "dot";
+					board[r][c].isBeingAttacked = true;
 					return;
 				}
 			}
@@ -36,7 +36,7 @@ class Bishop extends Piece {
 					return;
 				} else {
 					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c] = "dot";
+					board[r][c].isBeingAttacked = true;
 					return;
 				}
 			}
@@ -57,7 +57,7 @@ class Bishop extends Piece {
 					return;
 				} else {
 					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c] = "dot";
+					board[r][c].isBeingAttacked = true;
 					return;
 				}
 			}
@@ -81,7 +81,7 @@ class Bishop extends Piece {
 					return;
 				} else {
 					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c] = "dot";
+					board[r][c].isBeingAttacked = true;
 					return;
 				}
 			}

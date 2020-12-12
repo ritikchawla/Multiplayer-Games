@@ -1,3 +1,4 @@
+import Piece from "./ChessPiece";
 class ChessGame {
 	constructor() {
 		this.cellsClicked = { rows: [], cols: [] };
@@ -6,14 +7,24 @@ class ChessGame {
 		this.selected = null;
 	}
 
-	showValidMoves = (board, row, col) => {
+	clearDots = board => {
 		for (let row = 0; row < board.length; row++) {
 			for (let col = 0; col < board.length; col++) {
 				if (board[row][col] === "dot") {
 					board[row][col] = 0;
 				}
+
+				if (board[row][col] !== 0) {
+					if (board[row][col].isBeingAttacked) {
+						board[row][col].isBeingAttacked = false;
+					}
+				}
 			}
 		}
+	};
+
+	showValidMoves = (board, row, col) => {
+		this.clearDots(board);
 
 		if (board[row][col] !== 0) {
 			let piece = board[row][col];
@@ -22,10 +33,13 @@ class ChessGame {
 
 			console.log(moves);
 		}
+		this.select(board, row, col);
+
 		return board;
 	};
 
 	select = (board, row, col) => {
+		console.log("select called");
 		if (this.numClicks === 0) {
 			if (board[row][col] === 0) return false;
 			else if (board[row][col].color !== this.turn) return false;
@@ -37,9 +51,17 @@ class ChessGame {
 			}
 		} else if (this.numClicks === 1) {
 			// a piece has already been clicked
-			let str = String(row) + "," + String(col);
-			let piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
 
+			if (board[row][col] instanceof Piece) {
+				this.cellsClicked.rows[0] = row;
+				this.cellsClicked.cols[0] = col;
+				return;
+			}
+
+			let str = String(row) + "," + String(col);
+			console.log("str = ", str);
+			let piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
+			console.log("piece = ", piece);
 			if (!(str in piece.validMoves(board))) {
 				return false;
 			}
@@ -47,9 +69,13 @@ class ChessGame {
 			// clicked cell is a valid move
 			board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]] = 0;
 			board[row][col] = piece;
+			piece.setRowCol(row, col);
+			this.clearDots(board);
 
 			this.changeTurn();
 		}
+
+		return board;
 	};
 
 	changeTurn = () => {

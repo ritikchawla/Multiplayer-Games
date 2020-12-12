@@ -19,6 +19,16 @@ class Queen extends Piece {
 		return this.moves;
 	};
 
+	setRowCol = (row, col) => {
+		this.row = row;
+		this.rook.row = row;
+		this.bishop.row = row;
+
+		this.col = col;
+		this.rook.col = col;
+		this.bishop.col = col;
+	};
+
 	display() {
 		return this.color[0].toUpperCase() + "Q";
 	}

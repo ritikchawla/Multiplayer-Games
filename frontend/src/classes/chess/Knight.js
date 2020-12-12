@@ -25,7 +25,7 @@ class Knight extends Piece {
 						this.moves[
 							String(this.row - arrR[i]) + "," + String(this.col + arrC[i])
 						] = true;
-						board[this.row - arrR[i]][this.col + arrC[i]] = "dot";
+						board[this.row - arrR[i]][this.col + arrC[i]].isBeingAttacked = true;
 					}
 				}
 
@@ -39,7 +39,7 @@ class Knight extends Piece {
 						this.moves[
 							String(this.row + arrR[i]) + "," + String(this.col + arrC[i])
 						] = true;
-						board[this.row + arrR[i]][this.col + arrC[i]] = "dot";
+						board[this.row + arrR[i]][this.col + arrC[i]].isBeingAttacked = true;
 					}
 				}
 			}
