@@ -14,13 +14,13 @@ class Pawn extends Piece {
 
 		if (!this.hasMoved) {
 			this.moves[String(this.row + adder * 2) + "," + String(this.col)] = true;
-			board[this.row + adder * 2][this.col] = "1";
+			board[this.row + adder * 2][this.col] = "dot";
 		}
 
 		if (this.row + adder >= 0 && this.row + adder < 8) {
 			if (board[this.row + adder][this.col] === 0) {
 				this.moves[String(this.row + adder) + "," + String(this.col)] = true;
-				board[this.row + adder][this.col] = "1";
+				board[this.row + adder][this.col] = "dot";
 			}
 		}
 

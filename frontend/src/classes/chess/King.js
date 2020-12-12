@@ -11,43 +11,78 @@ class King extends Piece {
 			// vertical down
 			if (board[this.row + 1][this.col] === 0) {
 				this.moves[String(this.row + 1) + "," + String(this.col)] = true;
-				board[this.row + 1][this.col] = "1";
+				board[this.row + 1][this.col] = "dot";
 			} else if (board[this.row + 1][this.col].color !== this.color) {
 				this.moves[String(this.row + 1) + "," + String(this.col)] = true;
 
 				// don't do this here
-				board[this.row + 1][this.col] = "1";
+				board[this.row + 1][this.col] = "dot";
 			}
 
 			// lower right
 			if (this.col + 1 < 8) {
-				this.moves[String(this.row + 1) + "," + String(this.col + 1)] = true;
-				board[this.row + 1][this.col + 1] = "1";
+				if (board[this.row + 1][this.col + 1] === 0) {
+					this.moves[String(this.row + 1) + "," + String(this.col + 1)] = true;
+					board[this.row + 1][this.col + 1] = "dot";
+				} else if (board[this.row + 1][this.col + 1].color !== this.color) {
+					this.moves[String(this.row + 1) + "," + String(this.col + 1)] = true;
+
+					// don't do this here
+					board[this.row + 1][this.col + 1] = "dot";
+				}
 			}
 
 			// lower left
 			if (this.col - 1 >= 0) {
-				this.moves[String(this.row + 1) + "," + String(this.col - 1)] = true;
-				board[this.row + 1][this.col - 1] = "1";
+				if (board[this.row + 1][this.col - 1] === 0) {
+					this.moves[String(this.row + 1) + "," + String(this.col - 1)] = true;
+					board[this.row + 1][this.col - 1] = "dot";
+				} else if (board[this.row + 1][this.col - 1].color !== this.color) {
+					this.moves[String(this.row + 1) + "," + String(this.col - 1)] = true;
+
+					// don't do this here
+					board[this.row + 1][this.col - 1] = "dot";
+				}
 			}
 		}
 
 		// vertical
 		if (this.row - 1 >= 0) {
 			// vertical up
-			this.moves[String(this.row - 1) + "," + String(this.col)] = true;
-			board[this.row - 1][this.col] = "1";
+			if (board[this.row - 1][this.col] === 0) {
+				this.moves[String(this.row - 1) + "," + String(this.col)] = true;
+				board[this.row - 1][this.col] = "dot";
+			} else if (board[this.row - 1][this.col].color !== this.color) {
+				this.moves[String(this.row - 1) + "," + String(this.col)] = true;
+
+				// don't do this here
+				board[this.row + 1][this.col] = "dot";
+			}
 
 			// upper right
 			if (this.col + 1 < 8) {
-				this.moves[String(this.row - 1) + "," + String(this.col + 1)] = true;
-				board[this.row - 1][this.col + 1] = "1";
+				if (board[this.row - 1][this.col + 1] === 0) {
+					this.moves[String(this.row - 1) + "," + String(this.col + 1)] = true;
+					board[this.row - 1][this.col + 1] = "dot";
+				} else if (board[this.row - 1][this.col].color !== this.color) {
+					this.moves[String(this.row - 1) + "," + String(this.col + 1)] = true;
+
+					// don't do this here
+					board[this.row + 1][this.col + 1] = "dot";
+				}
 			}
 
 			// upper left
 			if (this.col - 1 >= 0) {
-				this.moves[String(this.row - 1) + "," + String(this.col - 1)] = true;
-				board[this.row - 1][this.col - 1] = "1";
+				if (board[this.row - 1][this.col - 1] === 0) {
+					this.moves[String(this.row - 1) + "," + String(this.col - 1)] = true;
+					board[this.row - 1][this.col - 1] = "dot";
+				} else if (board[this.row - 1][this.col].color !== this.color) {
+					this.moves[String(this.row - 1) + "," + String(this.col - 1)] = true;
+
+					// don't do this here
+					board[this.row + 1][this.col - 1] = "dot";
+				}
 			}
 		}
 
@@ -55,20 +90,20 @@ class King extends Piece {
 		if (this.col + 1 < 8) {
 			if (board[this.row][this.col + 1] === 0) {
 				this.moves[String(this.row) + "," + String(this.col + 1)] = true;
-				board[this.row][this.col + 1] = "1";
+				board[this.row][this.col + 1] = "dot";
 			} else if (board[this.row][this.col + 1].color !== this.color) {
 				this.moves[String(this.row) + "," + String(this.col + 1)] = true;
-				board[this.row][this.col + 1] = "1";
+				board[this.row][this.col + 1] = "dot";
 			}
 		}
 
 		if (this.col - 1 >= 0) {
 			if (board[this.row][this.col - 1] === 0) {
 				this.moves[String(this.row) + "," + String(this.col - 1)] = true;
-				board[this.row][this.col - 1] = "1";
+				board[this.row][this.col - 1] = "dot";
 			} else if (board[this.row][this.col - 1].color !== this.color) {
 				this.moves[String(this.row) + "," + String(this.col - 1)] = true;
-				board[this.row][this.col - 1] = "1";
+				board[this.row][this.col - 1] = "dot";
 			}
 		}
 

@@ -19,7 +19,6 @@ const Cell = ({ image, row, col, tile, color, board, blueDot, showMoves }) => {
 
 	return (
 		<div onClick={() => showMoves(row, col)} style={divStyles}>
-			{image && <img src={image} style={imgStyle} draggable />}
 			{blueDot && (
 				<div
 					style={{
@@ -31,6 +30,7 @@ const Cell = ({ image, row, col, tile, color, board, blueDot, showMoves }) => {
 					}}
 				></div>
 			)}
+			{image && <img src={image} style={imgStyle} draggable />}
 		</div>
 	);
 };

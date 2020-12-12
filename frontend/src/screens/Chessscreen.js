@@ -7,7 +7,7 @@ import Bishop from "../classes/chess/Bishop";
 import King from "../classes/chess/King";
 import Queen from "../classes/chess/Queen";
 
-const Chessscreen = () => {
+const Chessscreen = ({ getChessGameObj }) => {
 	const [board, setBoard] = useState([
 		[
 			new Rook("black", 0, 0),
@@ -55,6 +55,16 @@ const Chessscreen = () => {
 		]
 	]);
 
+	const game = getChessGameObj();
+
+	const showMoves = (row, col) => {
+		let tempBoard = board.map(b => b);
+
+		game.showValidMoves(tempBoard, row, col);
+
+		setBoard(tempBoard);
+	};
+
 	return (
 		<div>
 			{board.map((row, ri) => {
@@ -67,6 +77,10 @@ const Chessscreen = () => {
 							let piece = board[ri][ci];
 							let blueDot;
 
+							if (piece === "dot") {
+								blueDot = true;
+							}
+
 							return (
 								<Cell
 									blueDot={blueDot}
@@ -75,8 +89,8 @@ const Chessscreen = () => {
 									col={ci}
 									color={color}
 									key={`row${ri}-col${ci}`}
-									image={piece.image ? piece.image : ""}
-									// showMoves={showMoves}
+									image={piece.image ? piece.image : false}
+									showMoves={showMoves}
 								/>
 							);
 						})}

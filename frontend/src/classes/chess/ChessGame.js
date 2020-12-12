@@ -6,6 +6,25 @@ class ChessGame {
 		this.selected = null;
 	}
 
+	showValidMoves = (board, row, col) => {
+		for (let row = 0; row < board.length; row++) {
+			for (let col = 0; col < board.length; col++) {
+				if (board[row][col] === "dot") {
+					board[row][col] = 0;
+				}
+			}
+		}
+
+		if (board[row][col] !== 0) {
+			let piece = board[row][col];
+
+			let moves = piece.validMoves(board);
+
+			console.log(moves);
+		}
+		return board;
+	};
+
 	select = (board, row, col) => {
 		if (this.numClicks === 0) {
 			if (board[row][col] === 0) return false;
@@ -18,8 +37,8 @@ class ChessGame {
 			}
 		} else if (this.numClicks === 1) {
 			// a piece has already been clicked
-			str = String(row) + "," + String(col);
-			piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
+			let str = String(row) + "," + String(col);
+			let piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
 
 			if (!(str in piece.validMoves(board))) {
 				return false;
@@ -41,3 +60,5 @@ class ChessGame {
 		else this.turn = "white";
 	};
 }
+
+export default ChessGame;

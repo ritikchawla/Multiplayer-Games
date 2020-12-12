@@ -13,13 +13,13 @@ class Rook extends Piece {
 					break;
 				} else {
 					this.moves[String(this.row) + "," + String(c)] = true;
-					board[this.row][c] = "1";
+					board[this.row][c] = "dot";
 					break;
 				}
 			}
 
 			this.moves[String(this.row) + "," + String(c)] = true;
-			board[this.row][c] = "1";
+			board[this.row][c] = "dot";
 		}
 
 		for (let c = this.col + 1; c < 8; c++) {
@@ -28,13 +28,13 @@ class Rook extends Piece {
 					break;
 				} else {
 					this.moves[String(this.row) + "," + String(c)] = true;
-					board[this.row][c] = "1";
+					board[this.row][c] = "dot";
 					break;
 				}
 			}
 
 			this.moves[String(this.row) + "," + String(c)] = true;
-			board[this.row][c] = "1";
+			board[this.row][c] = "dot";
 		}
 
 		// go outwards from the current column, i.e iterate through rows
@@ -44,13 +44,13 @@ class Rook extends Piece {
 					break;
 				} else {
 					this.moves[String(r) + "," + String(this.col)] = true;
-					board[r][this.col] = "1";
+					board[r][this.col] = "dot";
 					break;
 				}
 			}
 
 			this.moves[String(r) + "," + String(this.col)] = true;
-			board[r][this.col] = "1";
+			board[r][this.col] = "dot";
 		}
 
 		for (let r = this.row + 1; r < 8; r++) {
@@ -59,13 +59,13 @@ class Rook extends Piece {
 					break;
 				} else {
 					this.moves[String(r) + "," + String(this.col)] = true;
-					board[r][this.col] = "1";
+					board[r][this.col] = "dot";
 					break;
 				}
 			}
 
 			this.moves[String(r) + "," + String(this.col)] = true;
-			board[r][this.col] = "1";
+			board[r][this.col] = "dot";
 		}
 
 		return this.moves;

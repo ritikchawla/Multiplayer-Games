@@ -15,13 +15,13 @@ class Bishop extends Piece {
 					return;
 				} else {
 					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c] = "1";
+					board[r][c] = "dot";
 					return;
 				}
 			}
 
 			this.moves[String(r) + "," + String(c)] = true;
-			board[r][c] = "1";
+			board[r][c] = "dot";
 
 			if (c === 7) break;
 			else c++;
@@ -36,13 +36,13 @@ class Bishop extends Piece {
 					return;
 				} else {
 					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c] = "1";
+					board[r][c] = "dot";
 					return;
 				}
 			}
 
 			this.moves[String(r) + "," + String(c)] = true;
-			board[r][c] = "1";
+			board[r][c] = "dot";
 
 			if (c === 7) break;
 			else c++;
@@ -57,13 +57,13 @@ class Bishop extends Piece {
 					return;
 				} else {
 					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c] = "1";
+					board[r][c] = "dot";
 					return;
 				}
 			}
 
 			this.moves[String(r) + "," + String(c)] = true;
-			board[r][c] = "1";
+			board[r][c] = "dot";
 
 			if (c === 0) break;
 			else c--;
@@ -81,13 +81,13 @@ class Bishop extends Piece {
 					return;
 				} else {
 					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c] = "1";
+					board[r][c] = "dot";
 					return;
 				}
 			}
 
 			this.moves[String(r) + "," + String(c)] = true;
-			board[r][c] = "1";
+			board[r][c] = "dot";
 		}
 	};
 
