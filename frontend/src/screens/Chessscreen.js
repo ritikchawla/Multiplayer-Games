@@ -10,7 +10,7 @@ import ChessGame from "../classes/chess/ChessGame";
 
 const game = new ChessGame();
 
-const Chessscreen = ({ getChessGameObj }) => {
+const ChessScreen = ({ getChessGameObj }) => {
 	const [board, setBoard] = useState([
 		[
 			new Rook("black", 0, 0),
@@ -66,6 +66,7 @@ const Chessscreen = ({ getChessGameObj }) => {
 		console.log("cells clicked = ", game.cellsClicked);
 		console.log("numClicks = ", game.numClicks);
 		console.log("turn = ", game.turn);
+		console.table(tempBoard);
 		setBoard(tempBoard);
 	};
 
@@ -79,7 +80,7 @@ const Chessscreen = ({ getChessGameObj }) => {
 								(ri + ci) % 2 === 0 ? "rgb(195,105,56)" : "rgb(239, 206,163)";
 
 							let piece = board[ri][ci];
-							let blueDot, redDot;
+							let blueDot, redDot, isClicked;
 
 							if (piece === "dot") {
 								blueDot = true;
@@ -89,13 +90,17 @@ const Chessscreen = ({ getChessGameObj }) => {
 								if (piece.isBeingAttacked) {
 									redDot = true;
 								}
+
+								if (piece.isClicked) {
+									isClicked = true;
+								}
 							}
 
 							return (
 								<Cell
 									blueDot={blueDot}
 									redDot={redDot}
-									board={board}
+									isClicked={isClicked}
 									row={ri}
 									col={ci}
 									color={color}
@@ -112,4 +117,4 @@ const Chessscreen = ({ getChessGameObj }) => {
 	);
 };
 
-export default Chessscreen;
+export default ChessScreen;

@@ -1,7 +1,13 @@
 import React from "react";
 
-const Cell = ({ image, row, col, tile, color, board, blueDot, redDot, showMoves }) => {
-	const bgColor = blueDot ? "rgba(0, 162, 232, 0.5)" : redDot ? "rgba(255,63,52, 0.8)" : null;
+const Cell = ({ image, row, col, tile, color, isClicked, blueDot, redDot, showMoves }) => {
+	const bgColor = blueDot
+		? "rgba(0, 162, 232, 0.5)"
+		: redDot
+		? "rgba(255,63,52, 0.8)"
+		: isClicked
+		? "rgba(240, 147, 43, 0.5)"
+		: null;
 
 	const divStyles = {
 		width: 75,
@@ -18,7 +24,10 @@ const Cell = ({ image, row, col, tile, color, board, blueDot, redDot, showMoves 
 	const innerDivStyles = {
 		backgroundColor: bgColor ? bgColor : "transparent",
 		width: "100%",
-		height: "100%"
+		height: "100%",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center"
 	};
 
 	const imgStyle = {

@@ -8,8 +8,11 @@ class Bishop extends Piece {
 	}
 
 	upperRight = board => {
-		let c = this.col + 1;
+		let c = this.col;
 		for (let r = this.row - 1; r >= 0; r--) {
+			if (c === 7) break;
+			else c++;
+
 			if (board[r][c] !== 0) {
 				if (board[r][c].color === this.color) {
 					return;
@@ -22,15 +25,15 @@ class Bishop extends Piece {
 
 			this.moves[String(r) + "," + String(c)] = true;
 			board[r][c] = "dot";
-
-			if (c === 7) break;
-			else c++;
 		}
 	};
 
 	lowerRight = board => {
-		let c = this.col + 1;
+		let c = this.col;
 		for (let r = this.row + 1; r < 8; r++) {
+			if (c === 7) break;
+			else c++;
+
 			if (board[r][c] !== 0) {
 				if (board[r][c].color === this.color) {
 					return;
@@ -43,15 +46,15 @@ class Bishop extends Piece {
 
 			this.moves[String(r) + "," + String(c)] = true;
 			board[r][c] = "dot";
-
-			if (c === 7) break;
-			else c++;
 		}
 	};
 
 	upperLeft = board => {
-		let c = this.col - 1;
+		let c = this.col;
 		for (let r = this.row - 1; r >= 0; r--) {
+			if (c === 0) break;
+			else c--;
+
 			if (board[r][c] !== 0) {
 				if (board[r][c].color === this.color) {
 					return;
@@ -64,9 +67,6 @@ class Bishop extends Piece {
 
 			this.moves[String(r) + "," + String(c)] = true;
 			board[r][c] = "dot";
-
-			if (c === 0) break;
-			else c--;
 		}
 	};
 

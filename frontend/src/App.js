@@ -1,6 +1,6 @@
 import React from "react";
 import ChessGame from "./classes/chess/ChessGame";
-import Chessscreen from "./screens/Chessscreen";
+import ChessScreen from "./screens/ChessScreen";
 
 const App = () => {
 	const getChessGameObj = () => {
@@ -10,7 +10,7 @@ const App = () => {
 
 	return (
 		<div className="App">
-			<Chessscreen getChessGameObj={getChessGameObj} />
+			<ChessScreen getChessGameObj={getChessGameObj} />
 		</div>
 	);
 };

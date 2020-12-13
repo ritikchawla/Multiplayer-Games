@@ -57,7 +57,7 @@ class Rook extends Piece {
 			if (board[r][this.col] !== 0) {
 				if (board[r][this.col].color === this.color) {
 					break;
-				} else {
+				} else if (board[r][this.col].color !== this.color) {
 					this.moves[String(r) + "," + String(this.col)] = true;
 					board[r][this.col].isBeingAttacked = true;
 					break;

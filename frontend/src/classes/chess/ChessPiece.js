@@ -5,6 +5,7 @@ class Piece {
 		this.col = col;
 		this.moves = {};
 		this.isBeingAttacked = false;
+		this.isClicked = false;
 	}
 
 	setRowCol = (row, col) => {

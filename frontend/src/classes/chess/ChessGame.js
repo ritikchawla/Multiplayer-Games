@@ -18,6 +18,10 @@ class ChessGame {
 					if (board[row][col].isBeingAttacked) {
 						board[row][col].isBeingAttacked = false;
 					}
+
+					if (board[row][col].isClicked) {
+						board[row][col].isClicked = false;
+					}
 				}
 			}
 		}
@@ -31,6 +35,8 @@ class ChessGame {
 
 			let moves = piece.validMoves(board);
 
+			piece.isClicked = true;
+
 			console.log(moves);
 		}
 		this.select(board, row, col);
@@ -42,6 +48,7 @@ class ChessGame {
 		console.log("select called");
 		if (this.numClicks === 0) {
 			if (board[row][col] === 0) return false;
+			else if (board[row][col] === "dot") return false;
 			else if (board[row][col].color !== this.turn) return false;
 			else {
 				this.cellsClicked.rows.push(row);
@@ -53,15 +60,20 @@ class ChessGame {
 			// a piece has already been clicked
 
 			if (board[row][col] instanceof Piece) {
-				this.cellsClicked.rows[0] = row;
-				this.cellsClicked.cols[0] = col;
-				return;
+				// if player clicked on another piece of his color, do not changeTurn
+
+				if (board[row][col].color === this.turn) {
+					this.cellsClicked.rows[0] = row;
+					this.cellsClicked.cols[0] = col;
+					return;
+				}
 			}
 
 			let str = String(row) + "," + String(col);
 			console.log("str = ", str);
 			let piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
 			console.log("piece = ", piece);
+
 			if (!(str in piece.validMoves(board))) {
 				return false;
 			}
@@ -70,8 +82,8 @@ class ChessGame {
 			board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]] = 0;
 			board[row][col] = piece;
 			piece.setRowCol(row, col);
-			this.clearDots(board);
 
+			this.clearDots(board);
 			this.changeTurn();
 		}
 
@@ -82,8 +94,7 @@ class ChessGame {
 		this.cellsClicked = { rows: [], cols: [] };
 		this.numClicks = 0;
 
-		if (this.turn === "white") this.turn = "black";
-		else this.turn = "white";
+		this.turn = this.turn === "white" ? "black" : "white";
 	};
 }
 
