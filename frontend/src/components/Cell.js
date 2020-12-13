@@ -1,13 +1,8 @@
 import React from "react";
+import { motion } from "framer-motion";
 
-const Cell = ({ image, row, col, tile, color, isClicked, blueDot, redDot, showMoves }) => {
-	const bgColor = blueDot
-		? "rgba(0, 162, 232, 0.5)"
-		: redDot
-		? "rgba(255,63,52, 0.8)"
-		: isClicked
-		? "rgba(240, 147, 43, 0.5)"
-		: null;
+const Cell = ({ image, row, col, color, isClicked, blueDot, redDot, showMoves }) => {
+	const bgColor = isClicked ? "rgba(240, 147, 43, 0.5)" : null;
 
 	const divStyles = {
 		width: 75,
@@ -27,7 +22,8 @@ const Cell = ({ image, row, col, tile, color, isClicked, blueDot, redDot, showMo
 		height: "100%",
 		display: "flex",
 		justifyContent: "center",
-		alignItems: "center"
+		alignItems: "center",
+		position: "relative"
 	};
 
 	const imgStyle = {
@@ -35,26 +31,24 @@ const Cell = ({ image, row, col, tile, color, isClicked, blueDot, redDot, showMo
 		width: 70
 	};
 
+	const dotStyle = {
+		borderRadius: "50%",
+		border: `3px solid ${blueDot ? "rgb(41, 128, 185)" : "rgba(255,63,52, 0.8)"}`,
+		backgroundColor: `${blueDot ? "rgb(41, 128, 185)" : "rgba(255,63,52, 0.8)"}`,
+		height: 20,
+		width: 20,
+		position: "absolute",
+		top: 27.5,
+		left: 27.5
+	};
+
 	return (
-		<div onClick={() => showMoves(row, col)} style={divStyles}>
-			<div style={innerDivStyles}>
-				{/* {(blueDot || redDot) && (
-				<div
-					style={{
-						borderRadius: "50%",
-						border: `3px solid ${blueDot ? "rgb(0, 162, 232)" : "#ff3f34"}`,
-						backgroundColor: `${blueDot ? "rgb(0, 162, 232)" : "#ff3f34"}`,
-						height: 10,
-						width: 10,
-						position: "absolute",
-						top: 30,
-						left: 30
-					}}
-				></div>
-			)} */}
+		<motion.div onClick={() => showMoves(row, col)} style={divStyles}>
+			<motion.div style={innerDivStyles} whileHover={{ cursor: "pointer" }}>
+				{(blueDot || redDot) && <div style={dotStyle}></div>}
 				{image && <img src={image} style={imgStyle} draggable />}
-			</div>
-		</div>
+			</motion.div>
+		</motion.div>
 	);
 };
 

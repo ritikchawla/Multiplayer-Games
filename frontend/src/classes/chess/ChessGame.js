@@ -30,14 +30,16 @@ class ChessGame {
 	showValidMoves = (board, row, col) => {
 		this.clearDots(board);
 
-		if (board[row][col] !== 0) {
-			let piece = board[row][col];
+		if (board[row][col] !== 0 && board[row][col] !== "dot") {
+			if (board[row][col].color === this.turn) {
+				let piece = board[row][col];
 
-			let moves = piece.validMoves(board);
+				let moves = piece.validMoves(board);
 
-			piece.isClicked = true;
+				piece.isClicked = true;
 
-			console.log(moves);
+				console.log(moves);
+			}
 		}
 		this.select(board, row, col);
 

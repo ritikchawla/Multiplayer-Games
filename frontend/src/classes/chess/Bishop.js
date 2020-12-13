@@ -2,7 +2,6 @@ import Piece from "./ChessPiece";
 
 class Bishop extends Piece {
 	constructor(color, row, col) {
-		// console.log("bishop", color, row, col);
 		super(color, row, col);
 		this.image = `images/chess/${this.color}Bishop.png`;
 	}

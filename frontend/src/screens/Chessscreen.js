@@ -10,7 +10,7 @@ import ChessGame from "../classes/chess/ChessGame";
 
 const game = new ChessGame();
 
-const ChessScreen = ({ getChessGameObj }) => {
+const ChessScreen = () => {
 	const [board, setBoard] = useState([
 		[
 			new Rook("black", 0, 0),
@@ -63,10 +63,10 @@ const ChessScreen = ({ getChessGameObj }) => {
 		game.showValidMoves(tempBoard, row, col);
 
 		// game.select(tempBoard, row, col);
-		console.log("cells clicked = ", game.cellsClicked);
-		console.log("numClicks = ", game.numClicks);
-		console.log("turn = ", game.turn);
-		console.table(tempBoard);
+		// console.log("cells clicked = ", game.cellsClicked);
+		// console.log("numClicks = ", game.numClicks);
+		// console.log("turn = ", game.turn);
+		// console.table(tempBoard);
 		setBoard(tempBoard);
 	};
 
