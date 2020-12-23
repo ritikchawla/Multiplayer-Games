@@ -4,6 +4,7 @@ class King extends Piece {
 	constructor(color, row, col) {
 		super(color, row, col);
 		this.image = `images/chess/${this.color}King.png`;
+		this.isKing = true;
 	}
 	validMoves = board => {
 		// vertical

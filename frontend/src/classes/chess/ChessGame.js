@@ -5,6 +5,10 @@ class ChessGame {
 		this.numClicks = 0;
 		this.turn = "white";
 		this.selected = null;
+		this.whiteKingPos = [7, 3];
+		this.blackKingPos = [0, 3];
+		this.whiteKingInCheck = false;
+		this.blackKingInCheck = false;
 	}
 
 	clearDots = board => {
@@ -38,7 +42,7 @@ class ChessGame {
 
 				piece.isClicked = true;
 
-				console.log(moves);
+				// console.log(moves);
 			}
 		}
 		this.select(board, row, col);
@@ -47,7 +51,7 @@ class ChessGame {
 	};
 
 	select = (board, row, col) => {
-		console.log("select called");
+		// console.log("select called");
 		if (this.numClicks === 0) {
 			if (board[row][col] === 0) return false;
 			else if (board[row][col] === "dot") return false;
@@ -72,21 +76,35 @@ class ChessGame {
 			}
 
 			let str = String(row) + "," + String(col);
-			console.log("str = ", str);
+			// console.log("str = ", str);
 			let piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
-			console.log("piece = ", piece);
+			// console.log("piece = ", piece);
 
 			if (!(str in piece.validMoves(board))) {
 				return false;
 			}
+
+			console.log(piece);
 
 			// clicked cell is a valid move
 			board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]] = 0;
 			board[row][col] = piece;
 			piece.setRowCol(row, col);
 
+			// set the king positions in order to help with checking for 'checks'
+			if (piece.isKing) {
+				if (piece.color === "white") {
+					this.whiteKingPos = [piece.row, piece.col];
+				} else {
+					this.blackKingPos = [piece.row, piece.col];
+				}
+			}
+
 			this.clearDots(board);
 			this.changeTurn();
+
+			console.log("white King = ", this.whiteKingPos);
+			console.log("black King = ", this.blackKingPos);
 		}
 
 		return board;

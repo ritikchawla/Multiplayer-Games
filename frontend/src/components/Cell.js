@@ -5,8 +5,8 @@ const Cell = ({ image, row, col, color, isClicked, blueDot, redDot, showMoves })
 	const bgColor = isClicked ? "rgba(240, 147, 43, 0.5)" : null;
 
 	const divStyles = {
-		width: 75,
-		height: 75,
+		width: 70,
+		height: 70,
 		backgroundColor: color,
 		padding: 0,
 		margin: 0,
@@ -23,7 +23,8 @@ const Cell = ({ image, row, col, color, isClicked, blueDot, redDot, showMoves })
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
-		position: "relative"
+		position: "relative",
+		boxShadow: redDot ? "inset 0px 0px 20px 5px rgb(255, 0, 0)" : ""
 	};
 
 	const imgStyle = {
@@ -33,8 +34,8 @@ const Cell = ({ image, row, col, color, isClicked, blueDot, redDot, showMoves })
 
 	const dotStyle = {
 		borderRadius: "50%",
-		border: `3px solid ${blueDot ? "rgb(41, 128, 185)" : "rgba(255,63,52, 0.8)"}`,
-		backgroundColor: `${blueDot ? "rgb(41, 128, 185)" : "rgba(255,63,52, 0.8)"}`,
+		border: `3px solid ${blueDot && "rgb(41, 128, 185)"}`,
+		backgroundColor: `${blueDot && "rgb(41, 128, 185)"}`,
 		height: 20,
 		width: 20,
 		position: "absolute",
@@ -51,7 +52,5 @@ const Cell = ({ image, row, col, color, isClicked, blueDot, redDot, showMoves })
 		</motion.div>
 	);
 };
-
-// rgb(0, 162, 232)
 
 export default Cell;
