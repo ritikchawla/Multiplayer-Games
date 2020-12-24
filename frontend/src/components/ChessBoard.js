@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Cell from "./Cell";
 import Pawn from "../classes/chess/Pawn";
 import Rook from "../classes/chess/Rook";

@@ -47,7 +47,7 @@ const Cell = ({ image, row, col, color, isClicked, blueDot, redDot, showMoves })
 		<motion.div onClick={() => showMoves(row, col)} style={divStyles}>
 			<motion.div style={innerDivStyles} whileHover={{ cursor: "pointer" }}>
 				{(blueDot || redDot) && <div style={dotStyle}></div>}
-				{image && <img src={image} style={imgStyle} draggable />}
+				{image && <img src={image} style={imgStyle} alt={image} draggable />}
 			</motion.div>
 		</motion.div>
 	);
