@@ -18,11 +18,18 @@ const io = new Server(server);
 io.on("connection", socket => {
 	// console.log("you're now connected to socket");
 
-	socket.on("nc", () => console.log("new connection found"));
+	socket.on("newConnection", ({ username }) => {
+		socket.username = username;
+		console.log("New user connected : ", username);
+	});
 
 	// for sending a new message to all users
 	socket.on("newMessage", ({ inputMessage }) => {
 		console.log("server newMessage = ", inputMessage);
-		io.emit("newMessageReceived", { newMessage: inputMessage });
+
+		socket.broadcast.emit("newMessageReceived", {
+			newMessage: inputMessage,
+			username: socket.username
+		});
 	});
 });
