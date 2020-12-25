@@ -70,7 +70,7 @@ const ChessBoard = () => {
 				setBoard(tempBoard);
 			});
 		}
-	}, [board]);
+	}, []);
 
 	const showMoves = (row, col) => {
 		let tempBoard = board.map(b => b);
@@ -88,7 +88,7 @@ const ChessBoard = () => {
 		// show the opponent's moves to the player
 
 		if (tempCellsClicked.rows.length === 2) {
-			window.socket.emit("movePlayed", { cellsClicked: tempCellsClicked });
+			socket.emit("movePlayed", { cellsClicked: tempCellsClicked });
 		}
 	};
 

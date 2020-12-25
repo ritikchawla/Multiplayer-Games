@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import "../styles/Chat.css";
 
 const Chat = () => {
-	// window.socket is already initialized
 	// react use effect has a call to setMessage, so I'm using setInputMessage
 	const [inputMessage, setInputMessage] = useState("");
 	const [messageList, setMessageList] = useState([]);
@@ -12,22 +11,39 @@ const Chat = () => {
 	const { socket } = useSelector(state => state.socket);
 
 	const displayBotMessage = msg => {
-		const user = msg.split(" ")[0];
-		const didLeave = msg.split(" ")[2];
 		let c;
+		const user = msg.split(" ")[0];
 
-		if (didLeave === "left") {
-			c = "#e74c3c";
-		} else {
+		if (user === "Currently") {
+			const s = msg.split("\n");
+			let firstLine = s[0],
+				secondLine = s[1];
 			c = "#8e44ad";
-		}
 
-		return (
-			<p style={{ color: c }}>
-				<span style={{ fontWeight: "bolder" }}>{user} </span>
-				{msg.split(" ").slice(1, msg.split(" ").length).join(" ")}
-			</p>
-		);
+			return (
+				<p style={{ color: c }}>
+					{firstLine}
+					<span style={{ fontWeight: "bolder", display: "block" }}>
+						{secondLine}
+					</span>
+				</p>
+			);
+		} else {
+			const didLeave = msg.split(" ")[2];
+
+			if (didLeave === "left") {
+				c = "#e74c3c";
+			} else {
+				c = "#8e44ad";
+			}
+
+			return (
+				<p style={{ color: c }}>
+					<span style={{ fontWeight: "bolder" }}>{user} </span>
+					{msg.split(" ").slice(1, msg.split(" ").length).join(" ")}
+				</p>
+			);
+		}
 	};
 
 	const sendMessage = e => {

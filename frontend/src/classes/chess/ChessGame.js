@@ -89,9 +89,7 @@ class ChessGame {
 			this.cellsClicked.rows.push(row);
 			this.cellsClicked.cols.push(col);
 
-			this.movePiece(board, this.cellsClicked);
-
-			let tempCellsClicked = this.cellsClicked;
+			let tempCellsClicked = this.movePiece(board, this.cellsClicked);
 
 			// this.clearDots(board);
 			// this.changeTurn();
@@ -101,8 +99,6 @@ class ChessGame {
 			// console.log("white King = ", this.whiteKingPos);
 			// console.log("black King = ", this.blackKingPos);
 		}
-
-		return board;
 	};
 
 	movePiece = (board, clickedCells) => {
@@ -116,10 +112,13 @@ class ChessGame {
 
 		let piece = board[rowi][coli];
 
+		console.log(piece);
+
+		piece.setRowCol(rowf, colf);
+
 		// clicked cell is a valid move
 		board[rowi][coli] = 0;
 		board[rowf][colf] = piece;
-		piece.setRowCol(rowf, colf);
 
 		// set the king positions in order to help with checking for 'checks'
 		if (piece.isKing) {
@@ -130,8 +129,12 @@ class ChessGame {
 			}
 		}
 
+		let tcc = this.cellsClicked;
+
 		this.clearDots(board);
 		this.changeTurn();
+
+		return tcc;
 	};
 
 	changeTurn = () => {
