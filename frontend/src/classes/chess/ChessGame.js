@@ -1,4 +1,5 @@
 import Piece from "./ChessPiece";
+
 class ChessGame {
 	constructor() {
 		this.cellsClicked = { rows: [], cols: [] };
@@ -31,9 +32,16 @@ class ChessGame {
 		}
 	};
 
-	showValidMoves = (board, row, col) => {
-		this.clearDots(board);
+	showValidMoves = (userColor, board, row, col) => {
+		if (
+			board[row][col] instanceof Piece &&
+			this.numClicks === 0 &&
+			board[row][col].color !== userColor
+		)
+			return;
 
+		this.clearDots(board);
+		console.log("turn = ", this.turn);
 		if (board[row][col] !== 0 && board[row][col] !== "dot") {
 			if (board[row][col].color === this.turn) {
 				let piece = board[row][col];
@@ -54,9 +62,9 @@ class ChessGame {
 	select = (board, row, col) => {
 		// console.log("select called");
 		if (this.numClicks === 0) {
-			if (board[row][col] === 0) return false;
-			else if (board[row][col] === "dot") return false;
-			else if (board[row][col].color !== this.turn) return false;
+			if (board[row][col] === 0) return;
+			else if (board[row][col] === "dot") return;
+			else if (board[row][col].color !== this.turn) return;
 			else {
 				this.cellsClicked.rows.push(row);
 				this.cellsClicked.cols.push(col);
@@ -112,7 +120,7 @@ class ChessGame {
 
 		let piece = board[rowi][coli];
 
-		console.log(piece);
+		// console.log(piece);
 
 		piece.setRowCol(rowf, colf);
 

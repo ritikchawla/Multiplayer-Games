@@ -13,17 +13,40 @@ const getUserString = () => {
 	return usersString.trim().slice(0, usersString.length - 1); // to not send the trailing comma
 };
 
+const getPieceColor = game => {
+	let chessColor = "white",
+		checkersColor = "red";
+
+	allSockets.forEach(socket => {
+		if (game === "chess") {
+			if (socket.chessPieceColor === "white") {
+				chessColor = "black";
+				return chessColor;
+			}
+		} else if (game === "checkers") {
+			if (socket.checkersPieceColor === "white") {
+				checkersColor = "black";
+				return checkersColor;
+			}
+		}
+	});
+
+	return game === "chess" ? chessColor : game === "checkers" ? checkersColor : null;
+};
+
 const socketController = socket => {
 	socket.on("newConnection", ({ username }) => {
 		// set username and name color for the joined user
 		socket.username = username;
 		socket.color = colors[colorIncrementor];
+		socket.chessPieceColor = getPieceColor("chess");
 
 		// add user to the connected sockets
 		allSockets.push({
 			id: socket.id,
 			username: socket.username,
-			color: socket.color
+			color: socket.color,
+			chessPieceColor: socket.chessPieceColor
 		});
 
 		socket.broadcast.emit("newMessageReceived", {
@@ -31,6 +54,8 @@ const socketController = socket => {
 			username: "Bot",
 			color: colors[0]
 		});
+
+		socket.emit("setChessPieceColor", { chessPieceColor: socket.chessPieceColor });
 
 		const allUsersString = getUserString();
 

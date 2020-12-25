@@ -9,6 +9,7 @@ import Bishop from "../classes/chess/Bishop";
 import King from "../classes/chess/King";
 import Queen from "../classes/chess/Queen";
 import ChessGame from "../classes/chess/ChessGame";
+import Piece from "../classes/chess/ChessPiece";
 
 const game = new ChessGame();
 
@@ -61,6 +62,7 @@ const ChessBoard = () => {
 	]);
 
 	const { socket } = useSelector(state => state.socket);
+	const { chessPieceColor } = useSelector(state => state.user);
 
 	useEffect(() => {
 		if (socket) {
@@ -73,8 +75,14 @@ const ChessBoard = () => {
 	}, []);
 
 	const showMoves = (row, col) => {
+		// if I do it like this, I won't be able to capture pieces
+		// do this inside the chess game class
+		// if (board[row][col] instanceof Piece) {
+		// 	if (board[row][col].color !== chessPieceColor) return;
+		// }
+
 		let tempBoard = board.map(b => b);
-		let tempCellsClicked = game.showValidMoves(tempBoard, row, col);
+		let tempCellsClicked = game.showValidMoves(chessPieceColor, tempBoard, row, col);
 
 		// game.select(tempBoard, row, col);
 		// console.log("cells clicked = ", game.cellsClicked);
@@ -86,62 +94,58 @@ const ChessBoard = () => {
 
 		// only return when len(tempCellsClicked.rows === 2) as we don't want to
 		// show the opponent's moves to the player
-
-		if (tempCellsClicked.rows.length === 2) {
-			socket.emit("movePlayed", { cellsClicked: tempCellsClicked });
+		if (tempCellsClicked) {
+			if (tempCellsClicked.rows.length === 2) {
+				socket.emit("movePlayed", { cellsClicked: tempCellsClicked });
+			}
 		}
 	};
 
-	return (
-		<div>
-			{board.map((row, ri) => {
-				return (
-					<div
-						style={{ margin: 0, padding: 0, display: "flex" }}
-						key={`row${ri}`}
-					>
-						{row.map((col, ci) => {
-							let color =
-								(ri + ci) % 2 === 0
-									? "rgb(195,105,56)"
-									: "rgb(239, 206,163)";
+	const showWhitePlayersBoard = () => {
+		return board.map((row, ri) => {
+			return (
+				<div style={{ margin: 0, padding: 0, display: "flex" }} key={`row${ri}`}>
+					{row.map((col, ci) => {
+						let color =
+							(ri + ci) % 2 === 0 ? "rgb(195,105,56)" : "rgb(239, 206,163)";
 
-							let piece = board[ri][ci];
-							let blueDot, redDot, isClicked;
+						let piece = board[ri][ci];
+						let blueDot, redDot, isClicked;
 
-							if (piece === "dot") {
-								blueDot = true;
+						if (piece === "dot") {
+							blueDot = true;
+						}
+
+						if (piece !== 0) {
+							if (piece.isBeingAttacked) {
+								redDot = true;
 							}
 
-							if (piece !== 0) {
-								if (piece.isBeingAttacked) {
-									redDot = true;
-								}
-
-								if (piece.isClicked) {
-									isClicked = true;
-								}
+							if (piece.isClicked) {
+								isClicked = true;
 							}
+						}
 
-							return (
-								<Cell
-									blueDot={blueDot}
-									redDot={redDot}
-									isClicked={isClicked}
-									row={ri}
-									col={ci}
-									color={color}
-									key={`row${ri}-col${ci}`}
-									image={piece.image ? piece.image : false}
-									showMoves={showMoves}
-								/>
-							);
-						})}
-					</div>
-				);
-			})}
-		</div>
-	);
+						return (
+							<Cell
+								blueDot={blueDot}
+								redDot={redDot}
+								isClicked={isClicked}
+								row={ri}
+								col={ci}
+								color={color}
+								key={`row${ri}-col${ci}`}
+								image={piece.image ? piece.image : false}
+								showMoves={showMoves}
+							/>
+						);
+					})}
+				</div>
+			);
+		});
+	};
+
+	return <div>{showWhitePlayersBoard()}</div>;
 };
 
 export default ChessBoard;

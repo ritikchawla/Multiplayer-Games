@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 
 const HomeScreen = ({ history }) => {
 	const dispatch = useDispatch();
+	let socket;
 
 	const homeDivStyles = {
 		backgroundColor: "white",
@@ -23,7 +24,7 @@ const HomeScreen = ({ history }) => {
 
 		dispatch({ type: "SET_USERNAME", payload: username });
 
-		const socket = io("localhost:3000");
+		socket = io("localhost:3000");
 		socket.emit("newConnection", { username });
 
 		dispatch({ type: "SET_SOCKET", payload: socket });
