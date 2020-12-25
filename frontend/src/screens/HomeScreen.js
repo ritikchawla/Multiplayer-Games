@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { io } from "socket.io-client";
+import { useDispatch } from "react-redux";
 
 const HomeScreen = ({ history }) => {
+	const dispatch = useDispatch();
+
 	const homeDivStyles = {
 		backgroundColor: "white",
 		padding: "3rem 2rem",
@@ -18,8 +21,12 @@ const HomeScreen = ({ history }) => {
 			return;
 		}
 
-		window.socket = io("localhost:3000");
-		window.socket.emit("newConnection", { username });
+		dispatch({ type: "SET_USERNAME", payload: username });
+
+		const socket = io("localhost:3000");
+		socket.emit("newConnection", { username });
+
+		dispatch({ type: "SET_SOCKET", payload: socket });
 
 		setUsername("");
 

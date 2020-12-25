@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+
 import Cell from "./Cell";
 import Pawn from "../classes/chess/Pawn";
 import Rook from "../classes/chess/Rook";
@@ -58,16 +60,36 @@ const ChessBoard = () => {
 		]
 	]);
 
+	const { socket } = useSelector(state => state.socket);
+
+	useEffect(() => {
+		if (socket) {
+			socket.on("opponentPlayedAMove", ({ cellsClicked }) => {
+				let tempBoard = board.map(b => b);
+				game.movePiece(tempBoard, cellsClicked);
+				setBoard(tempBoard);
+			});
+		}
+	}, [board]);
+
 	const showMoves = (row, col) => {
 		let tempBoard = board.map(b => b);
-		game.showValidMoves(tempBoard, row, col);
+		let tempCellsClicked = game.showValidMoves(tempBoard, row, col);
 
 		// game.select(tempBoard, row, col);
 		// console.log("cells clicked = ", game.cellsClicked);
 		// console.log("numClicks = ", game.numClicks);
 		// console.log("turn = ", game.turn);
 		// console.table(tempBoard);
+		console.log(tempCellsClicked);
 		setBoard(tempBoard);
+
+		// only return when len(tempCellsClicked.rows === 2) as we don't want to
+		// show the opponent's moves to the player
+
+		if (tempCellsClicked.rows.length === 2) {
+			window.socket.emit("movePlayed", { cellsClicked: tempCellsClicked });
+		}
 	};
 
 	return (

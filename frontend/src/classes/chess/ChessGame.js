@@ -38,16 +38,17 @@ class ChessGame {
 			if (board[row][col].color === this.turn) {
 				let piece = board[row][col];
 
-				let moves = piece.validMoves(board);
+				// this will actually put 'dot' on the board
+				piece.validMoves(board);
 
 				piece.isClicked = true;
 
 				// console.log(moves);
 			}
 		}
-		this.select(board, row, col);
+		let tempCellsClicked = this.select(board, row, col);
 
-		return board;
+		return tempCellsClicked;
 	};
 
 	select = (board, row, col) => {
@@ -60,7 +61,7 @@ class ChessGame {
 				this.cellsClicked.rows.push(row);
 				this.cellsClicked.cols.push(col);
 				this.numClicks++;
-				return true;
+				return this.cellsClicked;
 			}
 		} else if (this.numClicks === 1) {
 			// a piece has already been clicked
@@ -71,43 +72,66 @@ class ChessGame {
 				if (board[row][col].color === this.turn) {
 					this.cellsClicked.rows[0] = row;
 					this.cellsClicked.cols[0] = col;
-					return;
+					return this.cellsClicked;
 				}
 			}
 
 			let str = String(row) + "," + String(col);
-			// console.log("str = ", str);
 			let piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
+			// console.log("str = ", str);
 			// console.log("piece = ", piece);
 
 			if (!(str in piece.validMoves(board))) {
 				return false;
 			}
 
-			console.log(piece);
+			// update this.cellsClicked for socket connection
+			this.cellsClicked.rows.push(row);
+			this.cellsClicked.cols.push(col);
 
-			// clicked cell is a valid move
-			board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]] = 0;
-			board[row][col] = piece;
-			piece.setRowCol(row, col);
+			this.movePiece(board, this.cellsClicked);
 
-			// set the king positions in order to help with checking for 'checks'
-			if (piece.isKing) {
-				if (piece.color === "white") {
-					this.whiteKingPos = [piece.row, piece.col];
-				} else {
-					this.blackKingPos = [piece.row, piece.col];
-				}
-			}
+			let tempCellsClicked = this.cellsClicked;
 
-			this.clearDots(board);
-			this.changeTurn();
+			// this.clearDots(board);
+			// this.changeTurn();
 
-			console.log("white King = ", this.whiteKingPos);
-			console.log("black King = ", this.blackKingPos);
+			return tempCellsClicked;
+
+			// console.log("white King = ", this.whiteKingPos);
+			// console.log("black King = ", this.blackKingPos);
 		}
 
 		return board;
+	};
+
+	movePiece = (board, clickedCells) => {
+		// clicked cells is basically this.cellsClicked, but we take it as a
+		// parameter so that we can also use it for sockets
+
+		let { rows, cols } = clickedCells;
+
+		const [rowi, rowf] = rows;
+		const [coli, colf] = cols;
+
+		let piece = board[rowi][coli];
+
+		// clicked cell is a valid move
+		board[rowi][coli] = 0;
+		board[rowf][colf] = piece;
+		piece.setRowCol(rowf, colf);
+
+		// set the king positions in order to help with checking for 'checks'
+		if (piece.isKing) {
+			if (piece.color === "white") {
+				this.whiteKingPos = [piece.row, piece.col];
+			} else {
+				this.blackKingPos = [piece.row, piece.col];
+			}
+		}
+
+		this.clearDots(board);
+		this.changeTurn();
 	};
 
 	changeTurn = () => {
