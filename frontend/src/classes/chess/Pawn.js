@@ -1,5 +1,3 @@
-// import Piece from "ChessPiece";
-
 import Piece from "./ChessPiece";
 
 class Pawn extends Piece {
@@ -10,35 +8,38 @@ class Pawn extends Piece {
 	}
 
 	validMoves = board => {
+		this.resetMoves();
+
 		const adder = this.color === "black" ? 1 : -1;
 
 		if (!this.hasMoved) {
 			if (board[this.row + adder * 2][this.col] === 0) {
-				this.moves[String(this.row + adder * 2) + "," + String(this.col)] = true;
-				board[this.row + adder * 2][this.col] = "dot";
+				this.moves[String(this.row + adder * 2) + "," + String(this.col)] =
+					"valid";
 			}
 		}
 
 		if (this.row + adder >= 0 && this.row + adder < 8) {
 			if (board[this.row + adder][this.col] === 0) {
-				this.moves[String(this.row + adder) + "," + String(this.col)] = true;
-				board[this.row + adder][this.col] = "dot";
+				this.moves[String(this.row + adder) + "," + String(this.col)] = "valid";
 			}
 
 			// capturing moves
 			if (this.col + 1 < 8) {
 				if (board[this.row + adder][this.col + 1] !== 0) {
 					if (board[this.row + adder][this.col + 1].color !== this.color) {
-						this.moves[String(this.row + adder) + "," + String(this.col + 1)] = true;
-						board[this.row + adder][this.col + 1].isBeingAttacked = true;
+						this.moves[
+							String(this.row + adder) + "," + String(this.col + 1)
+						] = "capturing";
 					}
 				}
 			}
 			if (this.col - 1 >= 0) {
 				if (board[this.row + adder][this.col - 1] !== 0) {
 					if (board[this.row + adder][this.col - 1].color !== this.color) {
-						this.moves[String(this.row + adder) + "," + String(this.col - 1)] = true;
-						board[this.row + adder][this.col - 1].isBeingAttacked = true;
+						this.moves[
+							String(this.row + adder) + "," + String(this.col - 1)
+						] = "capturing";
 					}
 				}
 			}

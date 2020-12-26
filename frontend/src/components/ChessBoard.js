@@ -9,7 +9,6 @@ import Bishop from "../classes/chess/Bishop";
 import King from "../classes/chess/King";
 import Queen from "../classes/chess/Queen";
 import ChessGame from "../classes/chess/ChessGame";
-import Piece from "../classes/chess/ChessPiece";
 
 const game = new ChessGame();
 
@@ -65,43 +64,31 @@ const ChessBoard = () => {
 	const { chessPieceColor } = useSelector(state => state.user);
 
 	useEffect(() => {
-		if (socket) {
-			socket.on("opponentPlayedAMove", ({ cellsClicked }) => {
-				let tempBoard = board.map(b => b);
-				game.movePiece(tempBoard, cellsClicked);
-				setBoard(tempBoard);
-			});
-		}
-	}, []);
+		socket.on("opponentPlayedAMove", ({ cellsClicked }) => {
+			let tempBoard = board.map(b => b);
+			game.movePiece(tempBoard, cellsClicked);
+			setBoard(tempBoard);
+		});
+	}, [socket]);
 
 	const showMoves = (row, col) => {
-		// if I do it like this, I won't be able to capture pieces
-		// do this inside the chess game class
-		// if (board[row][col] instanceof Piece) {
-		// 	if (board[row][col].color !== chessPieceColor) return;
-		// }
-
 		let tempBoard = board.map(b => b);
 		let tempCellsClicked = game.showValidMoves(chessPieceColor, tempBoard, row, col);
 
-		// game.select(tempBoard, row, col);
-		// console.log("cells clicked = ", game.cellsClicked);
-		// console.log("numClicks = ", game.numClicks);
-		// console.log("turn = ", game.turn);
-		// console.table(tempBoard);
-		console.log(tempCellsClicked);
+		// console.log(tempCellsClicked);
 		setBoard(tempBoard);
 
 		// only return when len(tempCellsClicked.rows === 2) as we don't want to
 		// show the opponent's moves to the player
-		if (tempCellsClicked) {
+		if (tempCellsClicked && false) {
+			// cancelling for now
 			if (tempCellsClicked.rows.length === 2) {
 				socket.emit("movePlayed", { cellsClicked: tempCellsClicked });
 			}
 		}
 	};
 
-	const showWhitePlayersBoard = () => {
+	const showChessBoard = () => {
 		return board.map((row, ri) => {
 			return (
 				<div style={{ margin: 0, padding: 0, display: "flex" }} key={`row${ri}`}>
@@ -145,7 +132,16 @@ const ChessBoard = () => {
 		});
 	};
 
-	return <div>{showWhitePlayersBoard()}</div>;
+	return (
+		<div
+			style={{
+				display: "flex",
+				flexDirection: chessPieceColor === "white" ? "column" : "column-reverse"
+			}}
+		>
+			{showChessBoard(chessPieceColor)}
+		</div>
+	);
 };
 
 export default ChessBoard;

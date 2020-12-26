@@ -22,6 +22,8 @@ const HomeScreen = ({ history }) => {
 			return;
 		}
 
+		console.log("username = ", username);
+
 		dispatch({ type: "SET_USERNAME", payload: username });
 
 		socket = io("localhost:3000");
@@ -31,7 +33,7 @@ const HomeScreen = ({ history }) => {
 
 		setUsername("");
 
-		history.push("/chess");
+		history.push("/games");
 	};
 
 	return (

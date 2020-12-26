@@ -12,6 +12,10 @@ class Piece {
 		this.row = row;
 		this.col = col;
 	};
+
+	resetMoves = () => {
+		this.moves = {};
+	};
 }
 
 export default Piece;

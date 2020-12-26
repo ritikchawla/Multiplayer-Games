@@ -8,9 +8,16 @@ const reducers = combineReducers({
 	socket: socketReducer
 });
 
+const socketFromLocalStorage = localStorage.getItem("socket")
+	? localStorage.getItem("socket")
+	: {};
+const userFromLocalStorage = localStorage.getItem("user")
+	? localStorage.getItem("user")
+	: {};
+
 const initialState = {
-	user: {},
-	socket: {}
+	user: userFromLocalStorage,
+	socket: socketFromLocalStorage
 };
 
 const store = createStore(reducers, initialState, composeWithDevTools());

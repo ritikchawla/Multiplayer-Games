@@ -37,6 +37,7 @@ const getPieceColor = game => {
 const socketController = socket => {
 	socket.on("newConnection", ({ username }) => {
 		// set username and name color for the joined user
+		console.log(username);
 		socket.username = username;
 		socket.color = colors[colorIncrementor];
 		socket.chessPieceColor = getPieceColor("chess");
@@ -49,13 +50,22 @@ const socketController = socket => {
 			chessPieceColor: socket.chessPieceColor
 		});
 
+		console.log(allSockets);
+
+		colorIncrementor =
+			colorIncrementor + 1 === colors.length ? 1 : colorIncrementor + 1;
+	});
+
+	socket.on("getChessPieceColor", () => {
+		socket.emit("setChessPieceColor", { chessPieceColor: socket.chessPieceColor });
+	});
+
+	socket.on("newUserJoinsChat", ({ username }) => {
 		socket.broadcast.emit("newMessageReceived", {
 			newMessage: `${username} just joined the chat!`,
 			username: "Bot",
 			color: colors[0]
 		});
-
-		socket.emit("setChessPieceColor", { chessPieceColor: socket.chessPieceColor });
 
 		const allUsersString = getUserString();
 
@@ -64,9 +74,6 @@ const socketController = socket => {
 			username: "Bot",
 			color: colors[0]
 		});
-
-		colorIncrementor =
-			colorIncrementor + 1 === colors.length ? 1 : colorIncrementor + 1;
 	});
 
 	// for sending a new message to all users

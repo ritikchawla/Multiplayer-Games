@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import ChessBoard from "../components/ChessBoard";
 import Chat from "../components/Chat";
 
-const ChessScreen = () => {
+const ChessScreen = ({ location }) => {
 	const dispatch = useDispatch();
 	const { socket } = useSelector(state => state.socket);
 
 	const mainDivStyles = {
 		display: "flex",
 		alignItems: "center",
-		justifyContent: "space-between",
+		justifyContent: "center",
 		minHeight: "100vh",
 		minWidth: "85vw",
 		flexWrap: "wrap"
@@ -19,6 +19,13 @@ const ChessScreen = () => {
 
 	useEffect(() => {
 		document.title = "Games.IO | Chess";
+	}, []);
+
+	useEffect(() => {
+		console.log("chess screen use effect called");
+
+		socket.emit("getChessPieceColor");
+
 		socket.on("setChessPieceColor", ({ chessPieceColor }) => {
 			// do this somewhere else when you have more games
 			console.log("chessPieceColor = ", chessPieceColor);

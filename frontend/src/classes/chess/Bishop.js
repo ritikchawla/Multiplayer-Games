@@ -16,14 +16,12 @@ class Bishop extends Piece {
 				if (board[r][c].color === this.color) {
 					return;
 				} else {
-					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c].isBeingAttacked = true;
+					this.moves[String(r) + "," + String(c)] = "capturing";
 					return;
 				}
 			}
 
-			this.moves[String(r) + "," + String(c)] = true;
-			board[r][c] = "dot";
+			this.moves[String(r) + "," + String(c)] = "valid";
 		}
 	};
 
@@ -37,14 +35,12 @@ class Bishop extends Piece {
 				if (board[r][c].color === this.color) {
 					return;
 				} else {
-					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c].isBeingAttacked = true;
+					this.moves[String(r) + "," + String(c)] = "capturing";
 					return;
 				}
 			}
 
-			this.moves[String(r) + "," + String(c)] = true;
-			board[r][c] = "dot";
+			this.moves[String(r) + "," + String(c)] = "valid";
 		}
 	};
 
@@ -58,14 +54,12 @@ class Bishop extends Piece {
 				if (board[r][c].color === this.color) {
 					return;
 				} else {
-					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c].isBeingAttacked = true;
+					this.moves[String(r) + "," + String(c)] = "capturing";
 					return;
 				}
 			}
 
-			this.moves[String(r) + "," + String(c)] = true;
-			board[r][c] = "dot";
+			this.moves[String(r) + "," + String(c)] = "valid";
 		}
 	};
 
@@ -79,22 +73,46 @@ class Bishop extends Piece {
 				if (board[r][c].color === this.color) {
 					return;
 				} else {
-					this.moves[String(r) + "," + String(c)] = true;
-					board[r][c].isBeingAttacked = true;
+					this.moves[String(r) + "," + String(c)] = "capturing";
 					return;
 				}
 			}
 
-			this.moves[String(r) + "," + String(c)] = true;
-			board[r][c] = "dot";
+			this.moves[String(r) + "," + String(c)] = "valid";
 		}
 	};
 
-	validMoves = board => {
+	handleKingInCheck = (board, kingParameters) => {
+		// the king of the same color is in check
+		let { kingPos, pieceCheckingKing } = kingParameters;
+	};
+
+	validMoves = (board, kingParameters) => {
+		this.resetMoves();
+
 		this.upperRight(board);
 		this.lowerRight(board);
 		this.upperLeft(board);
 		this.lowerLeft(board);
+
+		let { whiteKingInCheck, blackKingInCheck } = kingParameters;
+
+		if (this.color === "white" && whiteKingInCheck) {
+			let { whiteKingPos, pieceCheckingWhiteKing } = kingParameters;
+			this.handleKingInCheck(board, {
+				kingPos: whiteKingPos,
+				pieceCheckingKing: pieceCheckingWhiteKing
+			});
+		}
+
+		if (this.color === "black" && blackKingInCheck) {
+			let { blackKingPos, pieceCheckingBlackKing } = kingParameters;
+			this.handleKingInCheck(board, {
+				kingPos: blackKingPos,
+				pieceCheckingKing: pieceCheckingBlackKing
+			});
+		}
+
 		return this.moves;
 	};
 

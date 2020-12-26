@@ -9,6 +9,7 @@ const Chat = () => {
 	const [messageList, setMessageList] = useState([]);
 
 	const { socket } = useSelector(state => state.socket);
+	const { username } = useSelector(state => state.user);
 
 	const displayBotMessage = msg => {
 		let c;
@@ -57,13 +58,16 @@ const Chat = () => {
 	};
 
 	useEffect(() => {
-		if (socket) {
-			socket.on("newMessageReceived", data => {
-				let { newMessage, username, color } = data;
-				setMessageList([...messageList, { username, newMessage, color }]);
-			});
-		}
-	}, [messageList]);
+		// to receive the bot message that state how many users are currently in the chat
+		socket.emit("newUserJoinsChat", { username });
+	}, []);
+
+	useEffect(() => {
+		socket.on("newMessageReceived", data => {
+			let { newMessage, username, color } = data;
+			setMessageList([...messageList, { username, newMessage, color }]);
+		});
+	}, [messageList, socket]);
 
 	return (
 		<div id="chat-form-container">

@@ -6,6 +6,8 @@ class Knight extends Piece {
 		this.image = `images/chess/${this.color}Knight.png`;
 	}
 	validMoves = board => {
+		this.resetMoves();
+
 		let arrC = [-2, -1, 1, 2];
 		let arrR = [1, 2, 2, 1];
 		// -2 and 2 at -1 and 1
@@ -19,13 +21,13 @@ class Knight extends Piece {
 					if (board[this.row - arrR[i]][this.col + arrC[i]] === 0) {
 						this.moves[
 							String(this.row - arrR[i]) + "," + String(this.col + arrC[i])
-						] = true;
-						board[this.row - arrR[i]][this.col + arrC[i]] = "dot";
-					} else if (board[this.row - arrR[i]][this.col + arrC[i]].color !== this.color) {
+						] = "valid";
+					} else if (
+						board[this.row - arrR[i]][this.col + arrC[i]].color !== this.color
+					) {
 						this.moves[
 							String(this.row - arrR[i]) + "," + String(this.col + arrC[i])
-						] = true;
-						board[this.row - arrR[i]][this.col + arrC[i]].isBeingAttacked = true;
+						] = "capturing";
 					}
 				}
 
@@ -33,13 +35,13 @@ class Knight extends Piece {
 					if (board[this.row + arrR[i]][this.col + arrC[i]] === 0) {
 						this.moves[
 							String(this.row + arrR[i]) + "," + String(this.col + arrC[i])
-						] = true;
-						board[this.row + arrR[i]][this.col + arrC[i]] = "dot";
-					} else if (board[this.row + arrR[i]][this.col + arrC[i]].color !== this.color) {
+						] = "valid";
+					} else if (
+						board[this.row + arrR[i]][this.col + arrC[i]].color !== this.color
+					) {
 						this.moves[
 							String(this.row + arrR[i]) + "," + String(this.col + arrC[i])
-						] = true;
-						board[this.row + arrR[i]][this.col + arrC[i]].isBeingAttacked = true;
+						] = "capturing";
 					}
 				}
 			}

@@ -7,38 +7,36 @@ class King extends Piece {
 		this.isKing = true;
 	}
 	validMoves = board => {
+		this.resetMoves();
+
 		// vertical
 		if (this.row + 1 < 8) {
 			// vertical down
 			if (board[this.row + 1][this.col] === 0) {
-				this.moves[String(this.row + 1) + "," + String(this.col)] = true;
-				board[this.row + 1][this.col] = "dot";
+				this.moves[String(this.row + 1) + "," + String(this.col)] = "valid";
 			} else if (board[this.row + 1][this.col].color !== this.color) {
-				this.moves[String(this.row + 1) + "," + String(this.col)] = true;
-				board[this.row + 1][this.col].isBeingAttacked = true;
+				this.moves[String(this.row + 1) + "," + String(this.col)] = "capturing";
 			}
 
 			// lower right
 			if (this.col + 1 < 8) {
 				if (board[this.row + 1][this.col + 1] === 0) {
-					this.moves[String(this.row + 1) + "," + String(this.col + 1)] = true;
-					board[this.row + 1][this.col + 1] = "dot";
+					this.moves[String(this.row + 1) + "," + String(this.col + 1)] =
+						"valid";
 				} else if (board[this.row + 1][this.col + 1].color !== this.color) {
-					this.moves[String(this.row + 1) + "," + String(this.col + 1)] = true;
-
-					board[this.row + 1][this.col + 1].isBeingAttacked = true;
+					this.moves[String(this.row + 1) + "," + String(this.col + 1)] =
+						"capturing";
 				}
 			}
 
 			// lower left
 			if (this.col - 1 >= 0) {
 				if (board[this.row + 1][this.col - 1] === 0) {
-					this.moves[String(this.row + 1) + "," + String(this.col - 1)] = true;
-					board[this.row + 1][this.col - 1] = "dot";
+					this.moves[String(this.row + 1) + "," + String(this.col - 1)] =
+						"valid";
 				} else if (board[this.row + 1][this.col - 1].color !== this.color) {
-					this.moves[String(this.row + 1) + "," + String(this.col - 1)] = true;
-
-					board[this.row + 1][this.col - 1].isBeingAttacked = true;
+					this.moves[String(this.row + 1) + "," + String(this.col - 1)] =
+						"capturing";
 				}
 			}
 		}
@@ -47,32 +45,30 @@ class King extends Piece {
 		if (this.row - 1 >= 0) {
 			// vertical up
 			if (board[this.row - 1][this.col] === 0) {
-				this.moves[String(this.row - 1) + "," + String(this.col)] = true;
-				board[this.row - 1][this.col] = "dot";
+				this.moves[String(this.row - 1) + "," + String(this.col)] = "valid";
 			} else if (board[this.row - 1][this.col].color !== this.color) {
-				this.moves[String(this.row - 1) + "," + String(this.col)] = true;
-				board[this.row - 1][this.col].isBeingAttacked = true;
+				this.moves[String(this.row - 1) + "," + String(this.col)] = "capturing";
 			}
 
 			// upper right
 			if (this.col + 1 < 8) {
 				if (board[this.row - 1][this.col + 1] === 0) {
-					this.moves[String(this.row - 1) + "," + String(this.col + 1)] = true;
-					board[this.row - 1][this.col + 1] = "dot";
+					this.moves[String(this.row - 1) + "," + String(this.col + 1)] =
+						"valid";
 				} else if (board[this.row - 1][this.col + 1].color !== this.color) {
-					this.moves[String(this.row - 1) + "," + String(this.col + 1)] = true;
-					board[this.row - 1][this.col + 1].isBeingAttacked = true;
+					this.moves[String(this.row - 1) + "," + String(this.col + 1)] =
+						"capturing";
 				}
 			}
 
 			// upper left
 			if (this.col - 1 >= 0) {
 				if (board[this.row - 1][this.col - 1] === 0) {
-					this.moves[String(this.row - 1) + "," + String(this.col - 1)] = true;
-					board[this.row - 1][this.col - 1] = "dot";
+					this.moves[String(this.row - 1) + "," + String(this.col - 1)] =
+						"valid";
 				} else if (board[this.row - 1][this.col - 1].color !== this.color) {
-					this.moves[String(this.row - 1) + "," + String(this.col - 1)] = true;
-					board[this.row - 1][this.col - 1].isBeingAttacked = true;
+					this.moves[String(this.row - 1) + "," + String(this.col - 1)] =
+						"capturing";
 				}
 			}
 		}
@@ -80,21 +76,17 @@ class King extends Piece {
 		// horizontal
 		if (this.col + 1 < 8) {
 			if (board[this.row][this.col + 1] === 0) {
-				this.moves[String(this.row) + "," + String(this.col + 1)] = true;
-				board[this.row][this.col + 1] = "dot";
+				this.moves[String(this.row) + "," + String(this.col + 1)] = "valid";
 			} else if (board[this.row][this.col + 1].color !== this.color) {
-				this.moves[String(this.row) + "," + String(this.col + 1)] = true;
-				board[this.row][this.col + 1].isBeingAttacked = true;
+				this.moves[String(this.row) + "," + String(this.col + 1)] = "capturing";
 			}
 		}
 
 		if (this.col - 1 >= 0) {
 			if (board[this.row][this.col - 1] === 0) {
-				this.moves[String(this.row) + "," + String(this.col - 1)] = true;
-				board[this.row][this.col - 1] = "dot";
+				this.moves[String(this.row) + "," + String(this.col - 1)] = "valid";
 			} else if (board[this.row][this.col - 1].color !== this.color) {
-				this.moves[String(this.row) + "," + String(this.col - 1)] = true;
-				board[this.row][this.col - 1].isBeingAttacked = true;
+				this.moves[String(this.row) + "," + String(this.col - 1)] = "capturing";
 			}
 		}
 

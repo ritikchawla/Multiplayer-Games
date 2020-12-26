@@ -10,7 +10,29 @@ class ChessGame {
 		this.blackKingPos = [0, 3];
 		this.whiteKingInCheck = false;
 		this.blackKingInCheck = false;
+		this.pieceCheckingWhiteKing = null;
+		this.pieceCheckingBlackKing = null;
+		this.kingParams = {};
 	}
+
+	/*
+    parameters to pass to validmoves function
+    0. Board
+    1. need to pass if kings are in check.
+    2. position of the kings.
+    3. piece that is chekcing the king.
+    */
+
+	setKingParams = () => {
+		this.kingParams = {
+			whiteKingInCheck: this.whiteKingInCheck,
+			blackKingInCheck: this.blackKingInCheck,
+			whiteKingPos: this.whiteKingPos,
+			blackKingPos: this.blackKingPos,
+			pieceCheckingWhiteKing: this.pieceCheckingWhiteKing,
+			pieceCheckingBlackKing: this.pieceCheckingBlackKing
+		};
+	};
 
 	clearDots = board => {
 		for (let row = 0; row < board.length; row++) {
@@ -32,8 +54,22 @@ class ChessGame {
 		}
 	};
 
+	showDots = (board, moves) => {
+		Object.keys(moves).forEach(key => {
+			// key = row,col
+			const [row, col] = key.split(",").map(k => Number(k));
+
+			if (moves[key] === "valid") {
+				board[row][col] = "dot";
+			} else if (moves[key] === "capturing") {
+				board[row][col].isBeingAttacked = true;
+			}
+		});
+	};
+
 	showValidMoves = (userColor, board, row, col) => {
 		if (
+			!userColor &&
 			board[row][col] instanceof Piece &&
 			this.numClicks === 0 &&
 			board[row][col].color !== userColor
@@ -41,22 +77,52 @@ class ChessGame {
 			return;
 
 		this.clearDots(board);
-		console.log("turn = ", this.turn);
+
 		if (board[row][col] !== 0 && board[row][col] !== "dot") {
 			if (board[row][col].color === this.turn) {
+				// console.log("calculating piece moves");
+
 				let piece = board[row][col];
 
-				// this will actually put 'dot' on the board
-				piece.validMoves(board);
+				this.showDots(board, piece.validMoves(board, this.kingParams));
 
 				piece.isClicked = true;
-
-				// console.log(moves);
 			}
 		}
 		let tempCellsClicked = this.select(board, row, col);
 
 		return tempCellsClicked;
+	};
+
+	setKingInCheck = (board, kingColor, lastMovedPiece) => {
+		if (kingColor === "white") {
+			let kingPos =
+				String(this.whiteKingPos[0]) + "," + String(this.whiteKingPos[1]);
+
+			if (kingPos in lastMovedPiece.validMoves(board)) {
+				this.whiteKingInCheck = true;
+			}
+		} else if (kingColor === "black") {
+			let kingPos =
+				String(this.blackKingPos[0]) + "," + String(this.blackKingPos[1]);
+
+			if (kingPos in lastMovedPiece.validMoves(board)) {
+				// need to set this to false somewhere
+				this.blackKingInCheck = true;
+			}
+		}
+
+		if (this.whiteKingInCheck) {
+			let [r, c] = this.whiteKingPos;
+			board[r][c].isBeingAttacked = true;
+		}
+
+		if (this.blackKingInCheck) {
+			let [r, c] = this.blackKingPos;
+			board[r][c].isBeingAttacked = true;
+		}
+
+		this.setKingParams();
 	};
 
 	select = (board, row, col) => {
@@ -86,11 +152,9 @@ class ChessGame {
 
 			let str = String(row) + "," + String(col);
 			let piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
-			// console.log("str = ", str);
-			// console.log("piece = ", piece);
 
 			if (!(str in piece.validMoves(board))) {
-				return false;
+				return;
 			}
 
 			// update this.cellsClicked for socket connection
@@ -99,13 +163,15 @@ class ChessGame {
 
 			let tempCellsClicked = this.movePiece(board, this.cellsClicked);
 
-			// this.clearDots(board);
-			// this.changeTurn();
+			// check if king is in check
+			// as the previous move might have been by white, and after movePiece()
+			// changes the turn, now it's black's turn and we need to check if
+			// black king is in check
+			// the piece has moved and it's row and columns have been changed so there
+			// is no point in passing the previously calculated moves to this function
+			this.setKingInCheck(board, this.turn, piece);
 
 			return tempCellsClicked;
-
-			// console.log("white King = ", this.whiteKingPos);
-			// console.log("black King = ", this.blackKingPos);
 		}
 	};
 

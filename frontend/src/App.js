@@ -3,6 +3,7 @@ import ChessScreen from "./screens/ChessScreen";
 
 import { Switch, Route } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
+import GamesScreen from "./screens/GamesScreen";
 
 const App = () => {
 	return (
@@ -14,7 +15,17 @@ const App = () => {
 					render={routeProps => <HomeScreen {...routeProps} />}
 				/>
 
-				<Route exact path="/chess" render={() => <ChessScreen />} />
+				<Route
+					exact
+					path="/games"
+					render={routeProps => <GamesScreen {...routeProps} />}
+				/>
+
+				<Route
+					exact
+					path="/chess"
+					render={routeProps => <ChessScreen {...routeProps} />}
+				/>
 			</Switch>
 		</div>
 	);
