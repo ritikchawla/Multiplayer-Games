@@ -27,7 +27,7 @@ const Canvas = () => {
 		const canvas = document.getElementById("drawingCanvas");
 		const ctx = canvas.getContext("2d");
 		const canvasContainer = document.querySelector(".canvasContainer");
-		canvas.width = canvasContainer.clientWidth * 0.9;
+		canvas.width = canvasContainer.clientWidth;
 		canvas.height = canvasContainer.clientHeight;
 		sketchIO = new SketchIO(canvas, ctx);
 		sketchIO.enableCanvas();

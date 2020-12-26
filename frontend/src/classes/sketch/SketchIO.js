@@ -51,20 +51,22 @@ class SketchIO {
 		}
 	};
 
-	onMouseDown = () => (this.painting = true);
-	onMouseUp = () => (this.painting = false);
+	setPaintingTrue = () => (this.painting = true);
+	setPaintingFalse = () => (this.painting = false);
 
 	enableCanvas = () => {
 		this.canvas.addEventListener("mousemove", this.onMouseMove);
-		this.canvas.addEventListener("mousedown", this.onMouseDown);
-		this.canvas.addEventListener("mouseup", this.onMouseUp);
+		this.canvas.addEventListener("mousedown", this.setPaintingTrue);
+		this.canvas.addEventListener("mouseup", this.setPaintingFalse);
+		this.canvas.addEventListener("mouseleave", this.setPaintingFalse);
 		this.canvas.addEventListener("click", this.handleCanvasClick);
 	};
 
 	disableCanvas = () => {
 		this.canvas.removeEventListener("mousemove", this.onMouseMove);
-		this.canvas.removeEventListener("mousedown", this.onMouseDown);
-		this.canvas.removeEventListener("mouseup", this.onMouseUp);
+		this.canvas.removeEventListener("mousedown", this.setPaintingTrue);
+		this.canvas.removeEventListener("mouseup", this.setPaintingFalse);
+		this.canvas.removeEventListener("mouseleave", this.setPaintingFalse);
 		this.canvas.removeEventListener("click", this.handleCanvasClick);
 	};
 }
