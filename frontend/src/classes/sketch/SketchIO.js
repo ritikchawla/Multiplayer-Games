@@ -1,7 +1,10 @@
 class SketchIO {
-	constructor(canvas, context) {
+	constructor(canvas, context, socket) {
 		this.canvas = canvas;
 		this.ctx = context;
+		this.initialFillStyle = "white";
+		this.initialStrokeStyle = "black";
+		this.socket = socket;
 		this.painting = false;
 		this.filling = false;
 		this.setInitialStyles();
@@ -16,14 +19,20 @@ class SketchIO {
 
 	getFilling = () => this.filling;
 
-	fill = () => {
+	fill = (color = null) => {
+		if (color === null) {
+			this.ctx.fillStyle = this.initialFillStyle;
+		} else {
+			this.ctx.fillStyle = color;
+		}
+
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	};
 
 	setInitialStyles = () => {
-		this.ctx.fillStyle = "white";
-		this.ctx.strokeStyle = "black";
-		this.fill();
+		this.ctx.fillStyle = this.initialFillStyle;
+		this.ctx.strokeStyle = this.initialStrokeStyle;
+		this.fill(this.ctx.fillStyle);
 	};
 
 	changeCanvasColor = color => {
@@ -31,23 +40,33 @@ class SketchIO {
 		this.ctx.fillStyle = color;
 	};
 
+	beginPath = (x, y) => {
+		this.ctx.beginPath();
+		this.ctx.moveTo(x, y);
+	};
+
+	drawPath = (x, y, color) => {
+		this.ctx.strokeStyle = color;
+		this.ctx.lineTo(x, y);
+		this.ctx.stroke();
+	};
+
 	onMouseMove = e => {
-		console.log("onMouseMove");
-		console.log("onMouseMove, if condtion");
 		let x = e.offsetX,
 			y = e.offsetY;
 		if (!this.painting) {
-			this.ctx.beginPath();
-			this.ctx.moveTo(x, y);
+			this.beginPath(x, y);
+			this.socket.emit("beganPath", { x, y });
 		} else {
-			this.ctx.lineTo(x, y);
-			this.ctx.stroke();
+			this.drawPath(x, y, this.ctx.strokeStyle);
+			this.socket.emit("strokedPath", { x, y, color: this.ctx.strokeStyle });
 		}
 	};
 
 	handleCanvasClick = () => {
 		if (this.filling) {
-			this.fill();
+			this.fill(this.ctx.fillStyle);
+			this.socket.emit("startedFilling", { color: this.ctx.fillStyle });
 		}
 	};
 

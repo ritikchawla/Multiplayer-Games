@@ -92,6 +92,18 @@ const socketController = socket => {
 		socket.broadcast.emit("opponentPlayedAMove", { cellsClicked });
 	});
 
+	socket.on("startedFilling", ({ color }) => {
+		socket.broadcast.emit("someoneFilled", { color });
+	});
+
+	socket.on("beganPath", ({ x, y }) => {
+		socket.broadcast.emit("someoneBeganPath", { x, y });
+	});
+
+	socket.on("strokedPath", ({ x, y, color }) => {
+		socket.broadcast.emit("someoneStrokedPath", { x, y, color });
+	});
+
 	socket.on("disconnect", () => {
 		allSockets = allSockets.filter(s => s.id !== socket.id);
 

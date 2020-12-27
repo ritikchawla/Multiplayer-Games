@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import SketchIO from "../classes/sketch/SketchIO";
+import { useSelector } from "react-redux";
 
+import SketchIO from "../classes/sketch/SketchIO";
 import "../styles/Canvas.css";
 
 let sketchIO;
 
 const Canvas = () => {
+	const { socket } = useSelector(state => state.socket);
+
 	const handleButtonClick = e => {
 		const btn = document.querySelector(".paint-fill");
 		sketchIO.toggleFillPaint();
@@ -25,17 +28,30 @@ const Canvas = () => {
 
 	useEffect(() => {
 		const canvas = document.getElementById("drawingCanvas");
+		canvas.width = 500;
+		canvas.height = 400;
 		const ctx = canvas.getContext("2d");
-		const canvasContainer = document.querySelector(".canvasContainer");
-		canvas.width = canvasContainer.clientWidth;
-		canvas.height = canvasContainer.clientHeight;
-		sketchIO = new SketchIO(canvas, ctx);
+		sketchIO = new SketchIO(canvas, ctx, socket);
 		sketchIO.enableCanvas();
 
 		return () => {
 			sketchIO.disableCanvas();
 		};
 	}, []);
+
+	useEffect(() => {
+		socket.on("someoneFilled", ({ color }) => {
+			sketchIO.fill(color);
+		});
+
+		socket.on("someoneBeganPath", ({ x, y }) => {
+			sketchIO.beginPath(x, y);
+		});
+
+		socket.on("someoneStrokedPath", ({ x, y, color }) => {
+			sketchIO.drawPath(x, y, color);
+		});
+	}, [socket]);
 
 	return (
 		<div className="canvasContainer">
