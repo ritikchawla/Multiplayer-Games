@@ -1,43 +1,16 @@
 import colors from "./colors.js";
-import { getPieceColor, getUserString } from "./helpers.js";
-import { getRandomWord } from "./words.js";
+import { getUserString } from "./helpers.js";
+import { addSocketToList, chooseNewPainter } from "./socketHelpers.js";
 
 let allSockets = {};
 let colorIncrementor = 1;
-let currentPainterIndex = 0;
-let currentPainter = null;
 let wordToPaint = null;
+let currentPainter = null;
 
-const addSocketToList = socket => {
-	if (!allSockets[socket.room]) {
-		allSockets[socket.room] = [];
-	}
-
-	let object1 = {
-		id: socket.id,
-		username: socket.username,
-		color: socket.color,
-		room: socket.room
-	};
-
-	let object2 = {};
-
-	switch (socket.room) {
-		case "chess":
-			socket.chessPieceColor = getPieceColor(allSockets, "chess");
-			object2["chessPieceColor"] = socket.chessPieceColor;
-			break;
-
-		case "sketchio":
-			object2["points"] = 0;
-			break;
-
-		default:
-			break;
-	}
-
-	// add user to the connected sockets
-	allSockets[socket.room].push({ ...object1, ...object2 });
+const sendSketchIOPlayerUpdate = (socket, io) => {
+	io.to(socket.room).emit("sketchioPlayerUpdate", {
+		allSketchIOSockets: allSockets[socket.room]
+	});
 };
 
 const socketController = (socket, io) => {
@@ -48,25 +21,18 @@ const socketController = (socket, io) => {
 		socket.room = room;
 		socket.join(room);
 
-		addSocketToList(socket);
+		allSockets = addSocketToList(allSockets, socket);
 
 		colorIncrementor =
 			colorIncrementor + 1 === colors.length ? 1 : colorIncrementor + 1;
 
 		if (socket.room === "sketchio") {
-			currentPainter = allSockets["sketchio"][currentPainterIndex].username;
+			sendSketchIOPlayerUpdate(socket, io);
+		}
 
-			wordToPaint = getRandomWord();
-
-			currentPainterIndex =
-				currentPainterIndex + 1 === allSockets["sketchio"].length
-					? 0
-					: currentPainterIndex + 1;
-
-			io.to(socket.room).emit("painterHasBeenChosen", {
-				painter: currentPainter,
-				word: wordToPaint
-			});
+		if (socket.room === "sketchio" && allSockets[socket.room].length > 1) {
+			// only start the game when there are atleast two members
+			[currentPainter, wordToPaint] = chooseNewPainter(allSockets, socket, io);
 		}
 	});
 
@@ -90,8 +56,6 @@ const socketController = (socket, io) => {
 
 	// for sending a new message to all users
 	socket.on("newMessage", ({ inputMessage }) => {
-		console.log("server newMessage = ", inputMessage);
-
 		socket.to(socket.room).broadcast.emit("newMessageReceived", {
 			newMessage: inputMessage,
 			username: socket.username,
@@ -100,13 +64,26 @@ const socketController = (socket, io) => {
 
 		// word was guessed correctly in the sketchio game
 		if (socket.room === "sketchio") {
-			if (inputMessage === wordToPaint) {
+			if (inputMessage.toLowerCase() === wordToPaint) {
 				socket.points += 5;
+
+				allSockets[socket.room] = allSockets[socket.room].map(s => {
+					if (s.id === socket.id) {
+						s.points += 5;
+					}
+
+					return s;
+				});
+
 				io.to(socket.room).emit("newMessageReceived", {
 					newMessage: `${socket.username} guessed the word correctly.\n Word was ${wordToPaint}`,
 					username: "Bot",
 					color: colors[0]
 				});
+
+				sendSketchIOPlayerUpdate(socket, io);
+
+				[currentPainter, wordToPaint] = chooseNewPainter(allSockets, socket, io);
 			}
 		}
 	});

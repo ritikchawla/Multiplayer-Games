@@ -8,7 +8,7 @@ const SketchIOScreen = () => {
 		alignItems: "center",
 		justifyContent: "center",
 		minHeight: "100vh",
-		minWidth: "85vw",
+		minWidth: "90vw",
 		flexWrap: "wrap"
 	};
 

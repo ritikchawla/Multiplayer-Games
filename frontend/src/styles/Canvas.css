@@ -10,7 +10,7 @@
 #drawingCanvas {
 	border-radius: 0.5rem;
 	box-shadow: 0 0 20px gray;
-	margin-bottom: 1rem;
+	margin: 1rem 0;
 }
 
 .colorsContainer {
