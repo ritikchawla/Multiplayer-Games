@@ -8,6 +8,7 @@ let sketchIO;
 
 const Canvas = () => {
 	const { socket } = useSelector(state => state.socket);
+	const { username } = useSelector(state => state.user);
 
 	const handleButtonClick = e => {
 		const btn = document.querySelector(".paint-fill");
@@ -40,6 +41,23 @@ const Canvas = () => {
 	}, []);
 
 	useEffect(() => {
+		socket.on("painterHasBeenChosen", ({ painter, word }) => {
+			// painter = username of the current painter
+			// word = random word to paint
+
+			const sketchInfo = document.getElementById("sketchInfo");
+
+			let text;
+
+			if (painter === username) {
+				text = `You are the painter. Paint ${word}`;
+			} else {
+				text = `${painter} is painting`;
+			}
+
+			sketchInfo.innerText = text;
+		});
+
 		socket.on("someoneFilled", ({ color }) => {
 			sketchIO.fill(color);
 		});
@@ -55,6 +73,7 @@ const Canvas = () => {
 
 	return (
 		<div className="canvasContainer">
+			<div id="sketchInfo"></div>
 			<canvas id="drawingCanvas"></canvas>
 			<div>
 				<button className="paint-fill" onClick={handleButtonClick}>

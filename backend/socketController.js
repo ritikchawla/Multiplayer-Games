@@ -1,65 +1,73 @@
 import colors from "./colors.js";
+import { getPieceColor, getUserString } from "./helpers.js";
+import { getRandomWord } from "./words.js";
 
-let allSockets = [];
+let allSockets = {};
 let colorIncrementor = 1;
+let currentPainterIndex = 0;
+let currentPainter = null;
+let wordToPaint = null;
 
-const getUserString = room => {
-	let usersString = "";
+const addSocketToList = socket => {
+	if (!allSockets[socket.room]) {
+		allSockets[socket.room] = [];
+	}
 
-	allSockets.forEach(socket => {
-		if (socket.room === room) {
-			usersString += socket.username + ", ";
-		}
-	});
+	let object1 = {
+		id: socket.id,
+		username: socket.username,
+		color: socket.color,
+		room: socket.room
+	};
 
-	return usersString.trim().slice(0, usersString.length - 1); // to not send the trailing comma
+	let object2 = {};
+
+	switch (socket.room) {
+		case "chess":
+			socket.chessPieceColor = getPieceColor(allSockets, "chess");
+			object2["chessPieceColor"] = socket.chessPieceColor;
+			break;
+
+		case "sketchio":
+			object2["points"] = 0;
+			break;
+
+		default:
+			break;
+	}
+
+	// add user to the connected sockets
+	allSockets[socket.room].push({ ...object1, ...object2 });
 };
 
-const getPieceColor = game => {
-	let chessColor = "white",
-		checkersColor = "red";
-
-	allSockets.forEach(socket => {
-		if (game === "chess" && socket.room === game) {
-			if (socket.chessPieceColor === "white") {
-				chessColor = "black";
-				return chessColor;
-			}
-		} else if (game === "checkers" && socket.room === game) {
-			if (socket.checkersPieceColor === "white") {
-				checkersColor = "black";
-				return checkersColor;
-			}
-		}
-	});
-
-	return game === "chess" ? chessColor : game === "checkers" ? checkersColor : null;
-};
-
-const socketController = socket => {
+const socketController = (socket, io) => {
 	socket.on("newConnection", ({ username, room }) => {
 		// set username and name color for the joined user
-		console.log(username);
 		socket.username = username;
 		socket.color = colors[colorIncrementor];
 		socket.room = room;
 		socket.join(room);
 
-		if (room === "chess") {
-			socket.chessPieceColor = getPieceColor("chess");
-		}
-
-		// add user to the connected sockets
-		allSockets.push({
-			id: socket.id,
-			username: socket.username,
-			color: socket.color,
-			chessPieceColor: socket.chessPieceColor,
-			room: socket.room
-		});
+		addSocketToList(socket);
 
 		colorIncrementor =
 			colorIncrementor + 1 === colors.length ? 1 : colorIncrementor + 1;
+
+		if (socket.room === "sketchio") {
+			currentPainter = allSockets["sketchio"][currentPainterIndex].username;
+
+			wordToPaint = getRandomWord();
+
+			currentPainterIndex =
+				currentPainterIndex + 1 === allSockets["sketchio"].length
+					? 0
+					: currentPainterIndex + 1;
+
+			io.to(socket.room).emit("painterHasBeenChosen", {
+				painter: currentPainter,
+				word: wordToPaint
+			});
+		}
 	});
 
 	// ===================== for Chat ======================================
@@ -70,7 +78,7 @@ const socketController = socket => {
 			color: colors[0]
 		});
 
-		const allUsersString = getUserString(socket.room);
+		const allUsersString = getUserString(allSockets, socket.room);
 
 		// no need to do socket.to() here as we're sending message to only one socket
 		socket.emit("newMessageReceived", {
@@ -89,8 +97,20 @@ const socketController = socket => {
 			username: socket.username,
 			color: socket.color
 		});
+
+		// word was guessed correctly in the sketchio game
+		if (socket.room === "sketchio") {
+			if (inputMessage === wordToPaint) {
+				socket.points += 5;
+				io.to(socket.room).emit("newMessageReceived", {
+					newMessage: `${socket.username} guessed the word correctly.\n Word was ${wordToPaint}`,
+					username: "Bot",
+					color: colors[0]
+				});
+			}
+		}
 	});
-	// ===================== for Chat ======================================
+	// ===================== end for Chat ======================================
 
 	// ================== for chess ===================================
 	socket.on("getChessPieceColor", () => {
@@ -101,7 +121,7 @@ const socketController = socket => {
 		console.log("opponentPlayedAMove", cellsClicked);
 		socket.broadcast.emit("opponentPlayedAMove", { cellsClicked });
 	});
-	// ================== for chess ===================================
+	// ================== end for chess ===================================
 
 	// ================ for sketchIO ===============================
 	socket.on("startedFilling", ({ color }) => {
@@ -115,13 +135,13 @@ const socketController = socket => {
 	socket.on("strokedPath", ({ x, y, color }) => {
 		socket.broadcast.emit("someoneStrokedPath", { x, y, color });
 	});
-	// ================ for sketchIO ===============================
+	// ================ end for sketchIO ===============================
 
 	socket.on("disconnect", () => {
-		let socketThatLeftRoom = allSockets.filter(s => s.id === socket.id)[0];
-		allSockets = allSockets.filter(s => s.id !== socket.id);
+		if (allSockets && allSockets[socket.room])
+			allSockets = allSockets[socket.room].filter(s => s.id !== socket.id);
 
-		socket.to(socketThatLeftRoom.room).broadcast.emit("newMessageReceived", {
+		socket.to(socket.room).broadcast.emit("newMessageReceived", {
 			newMessage: `${socket.username} just left the chat.`,
 			username: "Bot",
 			color: colors[0]

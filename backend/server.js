@@ -15,4 +15,4 @@ server.listen(PORT, console.log(`Server listening at port : ${PORT}`));
 
 const io = new Server(server);
 
-io.on("connection", socket => socketController(socket));
+io.on("connection", socket => socketController(socket, io));
