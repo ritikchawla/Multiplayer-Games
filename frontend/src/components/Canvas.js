@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import SketchIO from "../classes/sketch/SketchIO";
@@ -10,6 +10,7 @@ const Canvas = () => {
 	const dispatch = useDispatch();
 	const { socket } = useSelector(state => state.socket);
 	const { username } = useSelector(state => state.user);
+	const sketchIOSockets = useSelector(state => state.sketchIOSockets);
 
 	const hideButtonAndColors = () => {
 		const btnDiv = document.getElementById("sketchIOButton");
@@ -25,6 +26,23 @@ const Canvas = () => {
 
 		btnDiv.style.display = "block";
 		colorsDiv.style.display = "flex";
+	};
+
+	const addPainterToPointsList = allSketchIOSockets => {
+		const pointsList = document.getElementById("pointsList");
+		pointsList.innerHTML = "<p id='pointsListHeading'>Players</p>";
+
+		allSketchIOSockets.forEach(socket => {
+			console.log("addPainterToPointsList");
+			const div = document.createElement("div");
+			div.className = "pointsListItem";
+			div.innerHTML = `
+                <p class = 'pointsListItemUsername'>${socket.username}</p> 
+                <p class = 'pointsListItemPoints'>${socket.points}</p>
+            `;
+
+			pointsList.appendChild(div);
+		});
 	};
 
 	const handleButtonClick = e => {
@@ -55,11 +73,12 @@ const Canvas = () => {
 		return () => {
 			sketchIO.disableCanvas();
 		};
-	}, []);
+	}, [socket]);
 
 	useEffect(() => {
 		socket.on("sketchioPlayerUpdate", ({ allSketchIOSockets }) => {
 			dispatch({ type: "UPDATE_PAINTERS", payload: allSketchIOSockets });
+			addPainterToPointsList(allSketchIOSockets);
 		});
 
 		socket.on("painterHasBeenChosen", ({ painter, word }) => {
@@ -93,10 +112,10 @@ const Canvas = () => {
 		socket.on("someoneStrokedPath", ({ x, y, color }) => {
 			sketchIO.drawPath(x, y, color);
 		});
-	}, [socket]);
+	}, [socket, dispatch, addPainterToPointsList]);
 
 	return (
-		<div>
+		<div className="canvasSuperContainer">
 			<div id="pointsList"></div>
 			<div className="canvasContainer">
 				<div id="sketchInfo"></div>
