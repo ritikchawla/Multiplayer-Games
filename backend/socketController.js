@@ -13,6 +13,13 @@ const sendSketchIOPlayerUpdate = (socket, io) => {
 	});
 };
 
+const sendSketchIOPlayerLeaveUpdate = socket => {
+	console.log(allSockets[socket.room]);
+	socket.to(socket.room).broadcast.emit("sketchioPlayerLeaveUpdate", {
+		allSketchIOSockets: allSockets[socket.room]
+	});
+};
+
 const socketController = (socket, io) => {
 	socket.on("newConnection", ({ username, room }) => {
 		// set username and name color for the joined user
@@ -105,21 +112,26 @@ const socketController = (socket, io) => {
 
 	// ================ for sketchIO ===============================
 	socket.on("startedFilling", ({ color }) => {
-		socket.broadcast.emit("someoneFilled", { color });
+		socket.to(socket.room).broadcast.emit("someoneFilled", { color });
 	});
 
 	socket.on("beganPath", ({ x, y }) => {
-		socket.broadcast.emit("someoneBeganPath", { x, y });
+		socket.to(socket.room).broadcast.emit("someoneBeganPath", { x, y });
 	});
 
 	socket.on("strokedPath", ({ x, y, color }) => {
-		socket.broadcast.emit("someoneStrokedPath", { x, y, color });
+		socket.to(socket.room).broadcast.emit("someoneStrokedPath", { x, y, color });
 	});
 	// ================ end for sketchIO ===============================
 
 	socket.on("disconnect", () => {
-		if (allSockets && allSockets[socket.room])
-			allSockets = allSockets[socket.room].filter(s => s.id !== socket.id);
+		if (allSockets && allSockets[socket.room]) {
+			allSockets[socket.room] = allSockets[socket.room].filter(
+				s => s.id !== socket.id
+			);
+		}
+
+		sendSketchIOPlayerLeaveUpdate(socket);
 
 		socket.to(socket.room).broadcast.emit("newMessageReceived", {
 			newMessage: `${socket.username} just left the chat.`,
