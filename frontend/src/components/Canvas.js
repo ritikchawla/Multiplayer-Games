@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import SketchIO from "../classes/sketch/SketchIO";
+import useWindowSize from "../hooks/useWindowSize";
 import "../styles/Canvas.css";
 
 let sketchIO;
@@ -10,7 +11,8 @@ const Canvas = () => {
 	const dispatch = useDispatch();
 	const { socket } = useSelector(state => state.socket);
 	const { username } = useSelector(state => state.user);
-	const sketchIOSockets = useSelector(state => state.sketchIOSockets);
+
+	const windowSize = useWindowSize();
 
 	const hideButtonAndColors = () => {
 		const btnDiv = document.getElementById("sketchIOButton");
@@ -64,8 +66,10 @@ const Canvas = () => {
 
 	useEffect(() => {
 		const canvas = document.getElementById("drawingCanvas");
-		canvas.width = 500;
-		canvas.height = 400;
+
+		// canvas.width = 500;
+		// canvas.height = 400;
+
 		const ctx = canvas.getContext("2d");
 		sketchIO = new SketchIO(canvas, ctx, socket);
 		sketchIO.enableCanvas();
@@ -73,6 +77,10 @@ const Canvas = () => {
 		return () => {
 			sketchIO.disableCanvas();
 		};
+	}, [socket]);
+
+	useEffect(() => {
+		socket.emit("startSketchIO");
 	}, [socket]);
 
 	useEffect(() => {
@@ -91,6 +99,7 @@ const Canvas = () => {
 
 			if (painter === username) {
 				text = `You are the painter. Paint ${word}`;
+				sketchIO.enableCanvas();
 				showButtonAndColors();
 			} else {
 				text = `${painter} is painting`;
@@ -112,14 +121,21 @@ const Canvas = () => {
 		socket.on("someoneStrokedPath", ({ x, y, color }) => {
 			sketchIO.drawPath(x, y, color);
 		});
-	}, [socket, dispatch, addPainterToPointsList]);
+	}, [socket, dispatch, addPainterToPointsList, username]);
 
 	return (
-		<div className="canvasSuperContainer">
-			<div id="pointsList"></div>
+		<div
+			className="canvasSuperContainer"
+			style={{ width: window.innerWidth < 1000 && "100%" }}
+		>
+			<div id="pointsList" style={{ height: windowSize[0] * 0.6 * 0.6 }}></div>
 			<div className="canvasContainer">
 				<div id="sketchInfo"></div>
-				<canvas id="drawingCanvas"></canvas>
+				<canvas
+					id="drawingCanvas"
+					width={windowSize[0] * 0.6 * 0.7}
+					height={windowSize[0] * 0.6 * 0.6}
+				></canvas>
 				<div id="sketchIOButton">
 					<button className="paint-fill" onClick={handleButtonClick}>
 						Fill

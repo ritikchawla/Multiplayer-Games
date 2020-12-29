@@ -19,6 +19,7 @@
     "redux-devtools-extension": "^2.13.8",
     "socket.io-client": "^3.0.4",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
+    "uuid": "^8.3.2",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

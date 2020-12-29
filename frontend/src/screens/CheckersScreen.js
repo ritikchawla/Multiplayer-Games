@@ -93,7 +93,10 @@ const CheckersScreen = ({ updateCellsClicked, cellsClicked }) => {
 			<div>
 				{board.map((row, ri) => {
 					return (
-						<div style={{ margin: 0, padding: 0, display: "flex" }} key={`row${ri}`}>
+						<div
+							style={{ margin: 0, padding: 0, display: "flex" }}
+							key={`row${ri}`}
+						>
 							{row.map((col, ci) => {
 								let color = (ri + ci) % 2 === 0 ? "black" : "red";
 
@@ -103,13 +106,15 @@ const CheckersScreen = ({ updateCellsClicked, cellsClicked }) => {
 
 								if (piece !== 0) {
 									if (piece.color === "W") {
-										if (piece.isKing) image = "images/WhiteKing.png";
-										else image = "images/WhitePiece.png";
+										if (piece.isKing)
+											image = "images/checkers/WhiteKing.png";
+										else image = "images/checkers/WhitePiece.png";
 									} else if (piece === "dot") {
 										blueDot = true;
 									} else {
-										if (piece.isKing) image = "images/RedKing.png";
-										else image = "images/RedPiece.png";
+										if (piece.isKing)
+											image = "images/checkers/RedKing.png";
+										else image = "images/checkers/RedPiece.png";
 									}
 								}
 

@@ -28,8 +28,8 @@ const Cell = ({ image, row, col, color, isClicked, blueDot, redDot, showMoves })
 	};
 
 	const imgStyle = {
-		height: 70,
-		width: 70
+		height: 50,
+		width: 50
 	};
 
 	const dotStyle = {
