@@ -12,15 +12,20 @@ const DisplayRoomId = ({ roomId }) => {
 	};
 
 	const styles = {
+		maxWidth: "500px",
 		display: "flex",
-		justifyContent: "space-evenly",
-		alignItems: "center"
+		justifyContent: "space-between",
+		alignItems: "center",
+		flexWrap: "wrap"
 	};
 
 	return (
 		<div style={styles}>
+			<p>Send the code to invite players to this room</p>
 			<input id="roomIdToCopy" value={roomId} readOnly />
-			<button onClick={copyRoomId}>{copy}</button>
+			<button onClick={copyRoomId} style={{ backgroundColor: "#0984e3" }}>
+				{copy}
+			</button>
 		</div>
 	);
 };

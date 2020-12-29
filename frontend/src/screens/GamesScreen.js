@@ -1,26 +1,21 @@
 import React from "react";
-import { v4 as uuid } from "uuid";
-import { io } from "socket.io-client";
+import ShowGame from "../components/ShowGame";
+import useWindowSize from "../hooks/useWindowSize";
 
-const GamesScreen = ({ history }) => {
-	const s = { margin: "1rem" };
+const GamesScreen = () => {
+	const windowSize = useWindowSize();
 
-	const initSocket = _room => {
-		let room = `${_room}_${uuid()}`;
-		history.push(`/inviteplayers/${room}`);
+	const divStyles = {
+		width: windowSize[0] > 1000 ? "70%" : "90%",
+		display: "flex",
+		justifyContent: "space-between"
 	};
 
 	return (
-		<div>
-			<div style={s} onClick={() => initSocket("chess")}>
-				Chess
-			</div>
-			<div style={s} onClick={() => initSocket("checkers")}>
-				Checkers
-			</div>
-			<div style={s} onClick={() => initSocket("sketchio")}>
-				SketchIO
-			</div>
+		<div style={divStyles}>
+			{["chess", "checkers", "sketchio"].map(g => (
+				<ShowGame game={g} />
+			))}
 		</div>
 	);
 };

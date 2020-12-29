@@ -1,5 +1,6 @@
 import React from "react";
 import ChessScreen from "./screens/ChessScreen";
+import CheckersScreen from "./screens/CheckersScreen";
 
 import { Switch, Route } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
@@ -22,6 +23,12 @@ const App = () => {
 				exact
 				path="/chess"
 				render={routeProps => <ChessScreen {...routeProps} />}
+			/>
+
+			<Route
+				exact
+				path="/checkers"
+				render={routeProps => <CheckersScreen {...routeProps} />}
 			/>
 
 			<Route

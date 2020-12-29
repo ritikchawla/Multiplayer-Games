@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { io } from "socket.io-client";
 import DisplayPlayersInRoom from "../components/DisplayPlayersInRoom";
 import DisplayRoomId from "../components/DisplayRoomId";
+import useWindowSize from "../hooks/useWindowSize";
 
 let socket;
 
@@ -11,6 +12,8 @@ const InvitePlayersScreen = ({ match, history }) => {
 	const { username } = useSelector(state => state.user);
 	const sketchIOSockets = useSelector(state => state.sketchIOSockets);
 	const dispatch = useDispatch();
+
+	const windowSize = useWindowSize();
 
 	useEffect(() => {
 		let room = match.params.roomId;
@@ -47,7 +50,13 @@ const InvitePlayersScreen = ({ match, history }) => {
 	};
 
 	return (
-		<div style={{ width: "70%" }}>
+		<div
+			style={{
+				width: windowSize[0] > 1000 ? "70%" : "100%",
+				height: "100%",
+				padding: "4rem"
+			}}
+		>
 			<DisplayRoomId roomId={match.params.roomId} />
 			<DisplayPlayersInRoom allSockets={sketchIOSockets} />
 			<button onClick={startGame}>Start Game</button>
