@@ -12,7 +12,8 @@ const HomeScreen = ({ history }) => {
 		borderRadius: "0.5rem",
 		boxShadow: "0 0 80px black",
 		display: "flex",
-		flexDirection: "column"
+		flexDirection: "column",
+		alignSelf: "center"
 	};
 
 	const [username, setUsername] = useState("");
