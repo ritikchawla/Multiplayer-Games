@@ -13,10 +13,11 @@ const sendSketchIOPlayerUpdate = (socket, io) => {
 	});
 };
 
-const sendSketchIOPlayerLeaveUpdate = socket => {
+const sendPlayerLeaveUpdate = socket => {
+	// to show players leaveing on the InvitePlayers screen
 	console.log(allSockets[socket.room]);
-	socket.to(socket.room).broadcast.emit("sketchioPlayerLeaveUpdate", {
-		allSketchIOSockets: allSockets[socket.room]
+	socket.to(socket.room).broadcast.emit("playerLeaveUpdate", {
+		allRoomSockets: allSockets[socket.room]
 	});
 };
 
@@ -39,12 +40,13 @@ const socketController = (socket, io) => {
 		if (socket.roomName === "sketchio") {
 			sendSketchIOPlayerUpdate(socket, io);
 		}
-
-		if (socket.roomName === "sketchio" && allSockets[socket.room].length > 1) {
-			// only start the game when there are atleast two members
-			[currentPainter, wordToPaint] = chooseNewPainter(allSockets, socket, io);
-		}
 	});
+
+	// ========================= for all games ====================================
+	socket.on("redirectToGame", ({ game }) => {
+		socket.to(socket.room).broadcast.emit("redirectedToGame", { game });
+	});
+	// ========================= for all games ====================================
 
 	// ===================== for Chat ======================================
 	socket.on("newUserJoinsChat", ({ username }) => {
@@ -74,6 +76,7 @@ const socketController = (socket, io) => {
 
 		// word was guessed correctly in the sketchio game
 		if (socket.roomName === "sketchio") {
+			console.log("wordToPaint =", wordToPaint);
 			if (inputMessage.toLowerCase() === wordToPaint) {
 				socket.points += 5;
 
@@ -111,6 +114,16 @@ const socketController = (socket, io) => {
 	// ================== end for chess ===================================
 
 	// ================ for sketchIO ===============================
+	socket.on("startSketchIO", () => {
+		if (socket.roomName === "sketchio" && allSockets[socket.room].length > 1) {
+			// only start the game when there are atleast two members
+			// chooseNewPainter emits an event called 'painter has been chosen'
+			setTimeout(() => {
+				[currentPainter, wordToPaint] = chooseNewPainter(allSockets, socket, io);
+			}, 2000);
+		}
+	});
+
 	socket.on("startedFilling", ({ color }) => {
 		socket.to(socket.room).broadcast.emit("someoneFilled", { color });
 	});
@@ -131,7 +144,7 @@ const socketController = (socket, io) => {
 			);
 		}
 
-		sendSketchIOPlayerLeaveUpdate(socket);
+		sendPlayerLeaveUpdate(socket);
 
 		socket.to(socket.room).broadcast.emit("newMessageReceived", {
 			newMessage: `${socket.username} just left the chat.`,

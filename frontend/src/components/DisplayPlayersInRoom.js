@@ -4,7 +4,7 @@ const DisplayPlayersInRoom = ({ allSockets }) => {
 	return (
 		<div>
 			{allSockets.map(socket => (
-				<p>{socket.username}</p>
+				<p key={`1-${socket.username}`}>{socket.username}</p>
 			))}
 		</div>
 	);

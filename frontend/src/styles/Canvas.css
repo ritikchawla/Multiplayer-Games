@@ -87,6 +87,9 @@
 	outline: none;
 	border: 2px solid #c8d6e5;
 	color: #c8d6e5;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .paint-fill:hover {
