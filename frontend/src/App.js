@@ -5,6 +5,7 @@ import { Switch, Route } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
 import GamesScreen from "./screens/GamesScreen";
 import SketchIOScreen from "./screens/SketchIOScreen";
+import InvitePlayersScreen from "./screens/InvitePlayersScreen";
 
 const App = () => {
 	return (
@@ -29,7 +30,11 @@ const App = () => {
 				/>
 
 				<Route
-					exact
+					path="/inviteplayers/:roomId"
+					render={routeProps => <InvitePlayersScreen {...routeProps} />}
+				/>
+
+				<Route
 					path="/sketchio"
 					render={routeProps => <SketchIOScreen {...routeProps} />}
 				/>

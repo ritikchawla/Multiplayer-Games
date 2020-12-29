@@ -4,12 +4,12 @@ import { getRandomWord } from "./words.js";
 let currentPainterIndex = 0;
 
 export const chooseNewPainter = (allSockets, socket, io) => {
-	let currentPainter = allSockets["sketchio"][currentPainterIndex].username;
+	let currentPainter = allSockets[socket.room][currentPainterIndex].username;
 
 	let word = getRandomWord();
 
 	currentPainterIndex =
-		currentPainterIndex + 1 === allSockets["sketchio"].length
+		currentPainterIndex + 1 === allSockets[socket.room].length
 			? 0
 			: currentPainterIndex + 1;
 
@@ -30,12 +30,13 @@ export const addSocketToList = (allSockets, socket) => {
 		id: socket.id,
 		username: socket.username,
 		color: socket.color,
-		room: socket.room
+		room: socket.room,
+		roomName: socket.roomName
 	};
 
 	let object2 = {};
 
-	switch (socket.room) {
+	switch (socket.roomName) {
 		case "chess":
 			socket.chessPieceColor = getPieceColor(allSockets, "chess");
 			object2["chessPieceColor"] = socket.chessPieceColor;

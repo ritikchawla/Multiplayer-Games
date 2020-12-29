@@ -10,7 +10,6 @@ const Canvas = () => {
 	const dispatch = useDispatch();
 	const { socket } = useSelector(state => state.socket);
 	const { username } = useSelector(state => state.user);
-	const sketchIOSockets = useSelector(state => state.sketchIOSockets);
 
 	const hideButtonAndColors = () => {
 		const btnDiv = document.getElementById("sketchIOButton");
@@ -115,7 +114,10 @@ const Canvas = () => {
 	}, [socket, dispatch, addPainterToPointsList]);
 
 	return (
-		<div className="canvasSuperContainer">
+		<div
+			className="canvasSuperContainer"
+			style={{ width: window.innerWidth < 1000 && "100%" }}
+		>
 			<div id="pointsList"></div>
 			<div className="canvasContainer">
 				<div id="sketchInfo"></div>

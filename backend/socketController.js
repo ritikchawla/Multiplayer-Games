@@ -19,18 +19,21 @@ const socketController = (socket, io) => {
 		socket.username = username;
 		socket.color = colors[colorIncrementor];
 		socket.room = room;
+		socket.roomName = room.split("_")[0];
 		socket.join(room);
 
 		allSockets = addSocketToList(allSockets, socket);
 
+		console.log(allSockets);
+
 		colorIncrementor =
 			colorIncrementor + 1 === colors.length ? 1 : colorIncrementor + 1;
 
-		if (socket.room === "sketchio") {
+		if (socket.roomName === "sketchio") {
 			sendSketchIOPlayerUpdate(socket, io);
 		}
 
-		if (socket.room === "sketchio" && allSockets[socket.room].length > 1) {
+		if (socket.roomName === "sketchio" && allSockets[socket.room].length > 1) {
 			// only start the game when there are atleast two members
 			[currentPainter, wordToPaint] = chooseNewPainter(allSockets, socket, io);
 		}
@@ -63,7 +66,7 @@ const socketController = (socket, io) => {
 		});
 
 		// word was guessed correctly in the sketchio game
-		if (socket.room === "sketchio") {
+		if (socket.roomName === "sketchio") {
 			if (inputMessage.toLowerCase() === wordToPaint) {
 				socket.points += 5;
 

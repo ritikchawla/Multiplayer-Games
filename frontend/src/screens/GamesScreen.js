@@ -1,33 +1,26 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { v4 as uuid } from "uuid";
 import { io } from "socket.io-client";
 
-import { useSelector, useDispatch } from "react-redux";
-
-const GamesScreen = () => {
-	const { username } = useSelector(state => state.user);
-	const dispatch = useDispatch();
-
+const GamesScreen = ({ history }) => {
 	const s = { margin: "1rem" };
 
-	const initSocket = room => {
-		let socket = io("localhost:3000");
-		socket.emit("newConnection", { username, room });
-
-		dispatch({ type: "SET_SOCKET", payload: socket });
+	const initSocket = _room => {
+		let room = `${_room}_${uuid()}`;
+		history.push(`/inviteplayers/${room}`);
 	};
 
 	return (
 		<div>
-			<Link style={s} to="/chess" onClick={() => initSocket("chess")}>
+			<div style={s} onClick={() => initSocket("chess")}>
 				Chess
-			</Link>
-			<Link style={s} to="/checkers" onClick={() => initSocket("checkers")}>
+			</div>
+			<div style={s} onClick={() => initSocket("checkers")}>
 				Checkers
-			</Link>
-			<Link style={s} to="/sketchio" onClick={() => initSocket("sketchio")}>
+			</div>
+			<div style={s} onClick={() => initSocket("sketchio")}>
 				SketchIO
-			</Link>
+			</div>
 		</div>
 	);
 };
