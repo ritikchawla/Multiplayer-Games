@@ -30,23 +30,6 @@ const Canvas = () => {
 		colorsDiv.style.display = "flex";
 	};
 
-	const addPainterToPointsList = allSketchIOSockets => {
-		const pointsList = document.getElementById("pointsList");
-		pointsList.innerHTML = "<p id='pointsListHeading'>Players</p>";
-
-		allSketchIOSockets.forEach(socket => {
-			console.log("addPainterToPointsList");
-			const div = document.createElement("div");
-			div.className = "pointsListItem";
-			div.innerHTML = `
-                <p class = 'pointsListItemUsername'>${socket.username}</p> 
-                <p class = 'pointsListItemPoints'>${socket.points}</p>
-            `;
-
-			pointsList.appendChild(div);
-		});
-	};
-
 	const handleButtonClick = e => {
 		const btn = document.querySelector(".paint-fill");
 		sketchIO.toggleFillPaint();
@@ -84,6 +67,23 @@ const Canvas = () => {
 	}, [socket]);
 
 	useEffect(() => {
+		const addPainterToPointsList = allSketchIOSockets => {
+			const pointsList = document.getElementById("pointsList");
+			pointsList.innerHTML = "<p id='pointsListHeading'>Players</p>";
+
+			allSketchIOSockets.forEach(socket => {
+				console.log("addPainterToPointsList");
+				const div = document.createElement("div");
+				div.className = "pointsListItem";
+				div.innerHTML = `
+                    <p class = 'pointsListItemUsername'>${socket.username}</p> 
+                    <p class = 'pointsListItemPoints'>${socket.points}</p>
+                `;
+
+				pointsList.appendChild(div);
+			});
+		};
+
 		socket.on("sketchioPlayerUpdate", ({ allSketchIOSockets }) => {
 			dispatch({ type: "UPDATE_PAINTERS", payload: allSketchIOSockets });
 			addPainterToPointsList(allSketchIOSockets);
@@ -121,7 +121,7 @@ const Canvas = () => {
 		socket.on("someoneStrokedPath", ({ x, y, color }) => {
 			sketchIO.drawPath(x, y, color);
 		});
-	}, [socket, dispatch, addPainterToPointsList, username]);
+	}, [socket, dispatch, username]);
 
 	return (
 		<div

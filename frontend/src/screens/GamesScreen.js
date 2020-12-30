@@ -14,7 +14,7 @@ const GamesScreen = () => {
 	return (
 		<div style={divStyles}>
 			{["chess", "checkers", "sketchio"].map(g => (
-				<ShowGame game={g} />
+				<ShowGame game={g} key={g} />
 			))}
 		</div>
 	);

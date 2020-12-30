@@ -10,17 +10,17 @@ export const getUserString = (allSockets, room) => {
 	return usersString.trim().slice(0, usersString.length - 1); // to not send the trailing comma
 };
 
-export const getPieceColor = (allSockets, game) => {
+export const getPieceColor = (allSockets, roomId) => {
 	let chessColor = "white",
 		checkersColor = "red";
 
-	allSockets[game].forEach(socket => {
-		if (game === "chess" && socket.room === game) {
+	allSockets[roomId].forEach(socket => {
+		if (game === "chess" && socket.room === roomId) {
 			if (socket.chessPieceColor === "white") {
 				chessColor = "black";
 				return chessColor;
 			}
-		} else if (game === "checkers" && socket.room === game) {
+		} else if (game === "checkers" && socket.room === roomId) {
 			if (socket.checkersPieceColor === "white") {
 				checkersColor = "black";
 				return checkersColor;

@@ -28,3 +28,22 @@ export const sketchIOSocketsReducer = (state = [], action) => {
 			return state;
 	}
 };
+
+export const checkersSocketsReducer = (state = [], action) => {
+	switch (action.type) {
+		case "UPDATE_CHECKERS_PLAYERS":
+			return action.payload;
+
+		case "UPDATE_CHECKERS_PLAYERS_INFO":
+			return state.map(s => {
+				if (s.id === action.payload.id) {
+					return action.payload;
+				} else {
+					return s;
+				}
+			});
+
+		default:
+			return state;
+	}
+};

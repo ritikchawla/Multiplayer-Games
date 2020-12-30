@@ -7,9 +7,10 @@ let colorIncrementor = 1;
 let wordToPaint = null;
 let currentPainter = null;
 
-const sendSketchIOPlayerUpdate = (socket, io) => {
-	io.to(socket.room).emit("sketchioPlayerUpdate", {
-		allSketchIOSockets: allSockets[socket.room]
+const sendInviteScreenPlayerUpdate = (socket, io) => {
+	console.log(`\${socket.roomName}PlayerUpdate`, `${socket.roomName}PlayerUpdate`);
+	io.to(socket.room).emit(`${socket.roomName}PlayerUpdate`, {
+		allSocketsForRoom: allSockets[socket.room]
 	});
 };
 
@@ -32,14 +33,10 @@ const socketController = (socket, io) => {
 
 		allSockets = addSocketToList(allSockets, socket);
 
-		console.log(allSockets);
-
 		colorIncrementor =
 			colorIncrementor + 1 === colors.length ? 1 : colorIncrementor + 1;
 
-		if (socket.roomName === "sketchio") {
-			sendSketchIOPlayerUpdate(socket, io);
-		}
+		sendInviteScreenPlayerUpdate(socket, io);
 	});
 
 	// ========================= for all games ====================================
@@ -94,7 +91,7 @@ const socketController = (socket, io) => {
 					color: colors[0]
 				});
 
-				sendSketchIOPlayerUpdate(socket, io);
+				sendInviteScreenPlayerUpdate(socket, io);
 
 				[currentPainter, wordToPaint] = chooseNewPainter(allSockets, socket, io);
 			}
@@ -112,6 +109,14 @@ const socketController = (socket, io) => {
 		socket.broadcast.emit("opponentPlayedAMove", { cellsClicked });
 	});
 	// ================== end for chess ===================================
+
+	// =================== for CHECKERS =================================================
+	socket.on("getCheckersPieceColor", () => {
+		socket.emit("setCheckersPieceColor", {
+			checkersPieceColor: socket.checkersPieceColor
+		});
+	});
+	// =================== end for CHECKERS =================================================
 
 	// ================ for sketchIO ===============================
 	socket.on("startSketchIO", () => {

@@ -23,8 +23,8 @@ const InvitePlayersScreen = ({ match, history }) => {
 		socket.emit("newConnection", { username, room });
 		dispatch({ type: "SET_SOCKET", payload: socket });
 
-		socket.on("sketchioPlayerUpdate", ({ allSketchIOSockets }) => {
-			dispatch({ type: "UPDATE_PAINTERS", payload: allSketchIOSockets });
+		socket.on("sketchioPlayerUpdate", ({ allSocketsForRoom }) => {
+			dispatch({ type: "UPDATE_PAINTERS", payload: allSocketsForRoom });
 		});
 
 		socket.on("playerLeaveUpdate", ({ allRoomSockets }) => {
@@ -41,7 +41,17 @@ const InvitePlayersScreen = ({ match, history }) => {
 		switch (game) {
 			case "sketchio":
 				socket.emit("redirectToGame", { game });
-				history.push("/sketchio");
+				history.push("/sketchio"); // to the person who clicks on the button
+				break;
+
+			case "checkers":
+				socket.emit("redirectToGame", { game });
+				history.push("/checkers");
+				break;
+
+			case "chess":
+				socket.emit("redirectToGame", { game });
+				history.push("/chess");
 				break;
 
 			default:

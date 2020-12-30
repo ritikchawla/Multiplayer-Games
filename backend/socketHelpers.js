@@ -42,6 +42,11 @@ export const addSocketToList = (allSockets, socket) => {
 			object2["chessPieceColor"] = socket.chessPieceColor;
 			break;
 
+		case "checkers":
+			socket.chessPieceColor = getPieceColor(allSockets, "checkers");
+			object2["checkersPieceColor"] = socket.checkersPieceColor;
+			break;
+
 		case "sketchio":
 			object2["points"] = 0;
 			break;
