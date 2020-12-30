@@ -1,5 +1,5 @@
 import colors from "./colors.js";
-import { getUserString } from "./helpers.js";
+import { getPieceColor, getUserString } from "./helpers.js";
 import { addSocketToList, chooseNewPainter } from "./socketHelpers.js";
 
 let allSockets = {};
@@ -113,7 +113,7 @@ const socketController = (socket, io) => {
 	// =================== for CHECKERS =================================================
 	socket.on("getCheckersPieceColor", () => {
 		socket.emit("setCheckersPieceColor", {
-			checkersPieceColor: socket.checkersPieceColor
+			checkersPieceColor: getPieceColor(allSockets, socket.room, "checkers")
 		});
 	});
 	// =================== end for CHECKERS =================================================

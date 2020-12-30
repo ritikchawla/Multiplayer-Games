@@ -1,15 +1,16 @@
 export const userReducer = (state = {}, action) => {
 	switch (action.type) {
 		case "SET_USERNAME":
-			const toReturn = { ...state, username: action.payload };
+			const toReturn = { username: action.payload };
 			return toReturn;
 
 		case "SET_CHESS_PIECE_COLOR":
 			const toReturn1 = { ...state, chessPieceColor: action.payload };
 			return toReturn1;
 
-		case "SET_CHESS_PIECE_COLOR":
+		case "SET_CHECKERS_PIECE_COLOR":
 			const toReturn2 = { ...state, checkersPieceColor: action.payload };
+			console.log(toReturn2);
 			return toReturn2;
 
 		default:

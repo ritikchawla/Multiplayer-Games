@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import Cell from "./Cell";
 
 import CheckersPiece from "../classes/checkers/Piece";
 import move_piece from "../classes/checkers/checkersLogic";
 
 const CheckersBoard = ({ updateCellsClicked, cellsClicked }) => {
-	const checkersPieceColor = "black";
+	const { checkersPieceColor } = useSelector(state => state.user);
 
 	const [board, setBoard] = useState([
 		[0, 0, 0, 0, 0, 0, 0, 0],

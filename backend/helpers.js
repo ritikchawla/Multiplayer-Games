@@ -10,25 +10,34 @@ export const getUserString = (allSockets, room) => {
 	return usersString.trim().slice(0, usersString.length - 1); // to not send the trailing comma
 };
 
-export const getPieceColor = (allSockets, roomId) => {
+export const getPieceColor = (allSockets, roomId, game) => {
 	let chessColor = "white",
 		checkersColor = "red";
 
-	allSockets[roomId].forEach(socket => {
+	for (let i = 0; i < allSockets[roomId].length; i++) {
+		let socket = allSockets[roomId][i];
 		if (game === "chess" && socket.room === roomId) {
+			if (!socket.chessPieceColor) {
+				socket.chessPieceColor = chessColor;
+				return chessColor;
+			}
 			if (socket.chessPieceColor === "white") {
 				chessColor = "black";
 				return chessColor;
 			}
 		} else if (game === "checkers" && socket.room === roomId) {
-			if (socket.checkersPieceColor === "white") {
-				checkersColor = "black";
+			if (!socket.checkersPieceColor) {
+				socket.checkersPieceColor = checkersColor;
+				return checkersColor;
+			}
+
+			if (socket.checkersPieceColor === "red") {
+				checkersColor = "white";
+				socket.checkersPieceColor = checkersColor;
 				return checkersColor;
 			}
 		}
-	});
-
-	return game === "chess" ? chessColor : game === "checkers" ? checkersColor : null;
+	}
 };
 
 export const randIndex = length => {
