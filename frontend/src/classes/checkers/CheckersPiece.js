@@ -4,23 +4,32 @@ export default class CheckersPiece {
 		this.isKing = false;
 		this.row = pos[0];
 		this.col = pos[1];
-		this.opp_color = this.color === "B" ? "R" : "B";
+		this.opp_color = this.color === "red" ? "white" : "red";
 		this.current_row = pos[0];
 		this.current_col = pos[1];
-		this.moves = [];
+		this.moves = {};
 	}
+
+	getStr = (row, col) => String(row) + "," + String(col);
+
+	setRowCol = (row, col) => {
+		this.current_row = row;
+		this.current_col = col;
+	};
 
 	getCaptuingMoves = board => {
 		let cr = this.current_row;
 		let cc = this.current_col;
-		let capturing_moves = [];
 
 		if (this.row < 2) {
 			if (cr + 2 < 8) {
 				if (cc + 2 < 8) {
 					if (board[cr + 1][cc + 1] !== 0 && board[cr + 2][cc + 2] === 0) {
 						if (board[cr + 1][cc + 1].color === this.opp_color) {
-							capturing_moves.push([cr + 2, cc + 2]);
+							this.moves[this.getStr(cr + 2, cc + 2)] = [
+								"capturing",
+								{ row: cr + 1, col: cc + 1 }
+							];
 						}
 					}
 				}
@@ -28,7 +37,10 @@ export default class CheckersPiece {
 				if (cc - 2 >= 0) {
 					if (board[cr + 1][cc - 1] !== 0 && board[cr + 2][cc - 2] === 0) {
 						if (board[cr + 1][cc - 1].color === this.opp_color) {
-							capturing_moves.push([cr + 2, cc - 2]);
+							this.moves[this.getStr(cr + 2, cc - 2)] = [
+								"capturing",
+								{ row: cr + 1, col: cc - 1 }
+							];
 						}
 					}
 				}
@@ -38,7 +50,10 @@ export default class CheckersPiece {
 				if (cc + 2 < 8) {
 					if (board[cr - 1][cc + 1] !== 0 && board[cr - 2][cc + 2] === 0) {
 						if (board[cr - 1][cc + 1].color === this.opp_color) {
-							capturing_moves.push([cr - 2, cc + 2]);
+							this.moves[this.getStr(cr - 2, cc + 2)] = [
+								"capturing",
+								{ row: cr - 1, col: cc + 1 }
+							];
 						}
 					}
 				}
@@ -46,7 +61,10 @@ export default class CheckersPiece {
 				if (cc - 1 >= 0) {
 					if (board[cr - 1][cc - 1] !== 0 && board[cr - 2][cc - 2] === 0) {
 						if (board[cr - 1][cc - 1].color === this.opp_color) {
-							capturing_moves.push([cr - 2, cc - 2]);
+							this.moves[this.getStr(cr - 2, cc - 2)] = [
+								"capturing",
+								{ row: cr - 1, col: cc - 1 }
+							];
 						}
 					}
 				}
@@ -56,7 +74,10 @@ export default class CheckersPiece {
 				if (cc + 2 < 8) {
 					if (board[cr - 1][cc + 1] !== 0 && board[cr - 2][cc + 2] === 0) {
 						if (board[cr - 1][cc + 1].color === this.opp_color) {
-							capturing_moves.push([cr - 2, cc + 2]);
+							this.moves[this.getStr(cr - 2, cc + 2)] = [
+								"capturing",
+								{ row: cr - 1, col: cc + 1 }
+							];
 						}
 					}
 				}
@@ -64,7 +85,10 @@ export default class CheckersPiece {
 				if (cc - 2 >= 0) {
 					if (board[cr - 1][cc - 1] !== 0 && board[cr - 2][cc - 2] === 0) {
 						if (board[cr - 1][cc - 1].color === this.opp_color) {
-							capturing_moves.push([cr - 2, cc - 2]);
+							this.moves[this.getStr(cr - 2, cc - 2)] = [
+								"capturing",
+								{ row: cr - 1, col: cc - 1 }
+							];
 						}
 					}
 				}
@@ -74,7 +98,10 @@ export default class CheckersPiece {
 				if (cc + 2 < 8) {
 					if (board[cr + 1][cc + 1] !== 0 && board[cr + 2][cc + 2] === 0) {
 						if (board[cr + 1][cc + 1].color === this.opp_color) {
-							capturing_moves.push([cr + 2, cc + 2]);
+							this.moves[this.getStr(cr + 2, cc + 2)] = [
+								"capturing",
+								{ row: cr + 1, col: cc + 1 }
+							];
 						}
 					}
 				}
@@ -82,7 +109,10 @@ export default class CheckersPiece {
 				if (cc - 2 >= 0) {
 					if (board[cr + 1][cc - 1] !== 0 && board[cr + 2][cc - 2] === 0) {
 						if (board[cr + 1][cc - 1].color === this.opp_color) {
-							capturing_moves.push([cr + 2, cc - 2]);
+							this.moves[this.getStr(cr + 2, cc - 2)] = [
+								"capturing",
+								{ row: cr + 1, col: cc - 1 }
+							];
 						}
 					}
 				}
@@ -90,8 +120,8 @@ export default class CheckersPiece {
 		}
 	};
 
-	get_valid_moves = board => {
-		this.moves = []; // list of lists
+	validMoves = board => {
+		this.moves = {};
 		let cr = this.current_row;
 		let cc = this.current_col;
 
@@ -99,13 +129,13 @@ export default class CheckersPiece {
 			if (cr + 1 < 8) {
 				if (cc + 1 < 8) {
 					if (board[cr + 1][cc + 1] === 0) {
-						this.moves.push([cr + 1, cc + 1]);
+						this.moves[this.getStr(cr + 1, cc + 1)] = "valid";
 					}
 				}
 
 				if (cc - 1 >= 0) {
 					if (board[cr + 1][cc - 1] === 0) {
-						this.moves.push([cr + 1, cc - 1]);
+						this.moves[this.getStr(cr + 1, cc - 1)] = "valid";
 					}
 				}
 			}
@@ -113,13 +143,13 @@ export default class CheckersPiece {
 			if (this.isKing && cr - 1 >= 0) {
 				if (cc + 1 < 8) {
 					if (board[cr - 1][cc + 1] === 0) {
-						this.moves.push([cr - 1, cc + 1]);
+						this.moves[this.getStr(cr - 1, cc + 1)] = "valid";
 					}
 				}
 
 				if (cc - 1 >= 0) {
 					if (board[cr - 1][cc - 1] === 0) {
-						this.moves.push([cr - 1, cc - 1]);
+						this.moves[this.getStr(cr - 1, cc - 1)] = "valid";
 					}
 				}
 			}
@@ -127,13 +157,13 @@ export default class CheckersPiece {
 			if (cr - 1 >= 0) {
 				if (cc + 1 < 8) {
 					if (board[cr - 1][cc + 1] === 0) {
-						this.moves.push([cr - 1, cc + 1]);
+						this.moves[this.getStr(cr - 1, cc + 1)] = "valid";
 					}
 				}
 
 				if (cc - 1 >= 0) {
 					if (board[cr - 1][cc - 1] === 0) {
-						this.moves.push([cr - 1, cc - 1]);
+						this.moves[this.getStr(cr - 1, cc - 1)] = "valid";
 					}
 				}
 			}
@@ -141,17 +171,21 @@ export default class CheckersPiece {
 			if (this.isKing && cr + 1 < 8) {
 				if (cc + 1 < 8) {
 					if (board[cr + 1][cc + 1] === 0) {
-						this.moves.push([cr + 1, cc + 1]);
+						this.moves[this.getStr(cr + 1, cc + 1)] = "valid";
 					}
 				}
 
 				if (cc - 1 >= 0) {
 					if (board[cr + 1][cc - 1] === 0) {
-						this.moves.push([cr + 1, cc - 1]);
+						this.moves[this.getStr(cr + 1, cc - 1)] = "valid";
 					}
 				}
 			}
 		}
+
+		this.getCaptuingMoves(board);
+
+		console.log("this.moves =", this.moves);
 
 		return this.moves;
 	};
