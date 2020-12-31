@@ -45,6 +45,12 @@ const socketController = (socket, io) => {
 	socket.on("movePlayed", ({ cellsClicked }) => {
 		socket.to(socket.room).broadcast.emit("opponentPlayedAMove", { cellsClicked });
 	});
+
+	// chess and checkers game over
+	socket.on("gameOver", gameOverObject => {
+		socket.to(socket.room).broadcast.emit("gameHasEnded", gameOverObject);
+	});
+
 	// ========================= for all games ====================================
 
 	// ===================== for Chat ======================================

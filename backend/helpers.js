@@ -7,7 +7,7 @@ export const getUserString = (allSockets, room) => {
 		}
 	});
 
-	return usersString.trim().slice(0, usersString.length - 1); // to not send the trailing comma
+	return usersString.trim().slice(0, usersString.length - 2); // to not send the trailing comma
 };
 
 export const getPieceColor = (allSockets, roomId, game) => {

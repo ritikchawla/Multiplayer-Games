@@ -6,6 +6,10 @@ class CheckersGame {
 		this.numClicks = 0;
 		this.turn = "red";
 		this.selected = null;
+		this.redPiecesOnBoard = 8;
+		this.whitePiecesOnBoard = 8;
+		this.gameOver = false;
+		this.winner = null;
 	}
 
 	getStr = (row, col) => String(row) + "," + String(col);
@@ -142,6 +146,12 @@ class CheckersGame {
 				piece.makeKing();
 			}
 
+			if (capturedPiece.color === "white") {
+				this.whitePiecesOnBoard--;
+			} else if (capturedPiece.color === "red") {
+				this.redPiecesOnBoard--;
+			}
+
 			// clicked cell is a valid move
 			board[rowi][coli] = 0;
 			board[row][col] = 0; // remove the captured piece
@@ -154,6 +164,56 @@ class CheckersGame {
 		this.changeTurn();
 
 		return tcc;
+	};
+
+	colorHasMovesLeft = (board, color) => {
+		for (let row = 0; row < board.length; row++) {
+			for (let col = 0; col < board.length; col++) {
+				if (
+					board[row][col] !== 0 &&
+					board[row][col] !== "dot" &&
+					board[row][col].color === color
+				) {
+					if (Object.keys(board[row][col].validMoves(board) > 0)) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	};
+
+	redWins = () => {
+		this.gameOver = true;
+		this.winner = "red";
+		return this.gameOver;
+	};
+
+	whiteWins = () => {
+		this.gameOver = true;
+		this.winner = "white";
+		return this.gameOver;
+	};
+
+	isGameOver = board => {
+		if (this.redPiecesOnBoard === 7) {
+			return this.whiteWins();
+		}
+
+		if (this.whitePiecesOnBoard === 7) {
+			return this.redWins();
+		}
+
+		if (!this.colorHasMovesLeft(board, "white")) {
+			return this.redWins();
+		}
+
+		if (!this.colorHasMovesLeft(board, "red")) {
+			return this.whiteWins();
+		}
+
+		return false;
 	};
 
 	changeTurn = () => {
