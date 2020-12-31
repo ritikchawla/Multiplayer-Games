@@ -5,10 +5,8 @@ import { addSocketToList, chooseNewPainter } from "./socketHelpers.js";
 let allSockets = {};
 let colorIncrementor = 1;
 let wordToPaint = null;
-let currentPainter = null;
 
 const sendInviteScreenPlayerUpdate = (socket, io) => {
-	console.log(`\${socket.roomName}PlayerUpdate`, `${socket.roomName}PlayerUpdate`);
 	io.to(socket.room).emit(`${socket.roomName}PlayerUpdate`, {
 		allSocketsForRoom: allSockets[socket.room]
 	});
@@ -16,7 +14,6 @@ const sendInviteScreenPlayerUpdate = (socket, io) => {
 
 const sendPlayerLeaveUpdate = socket => {
 	// to show players leaveing on the InvitePlayers screen
-	console.log(allSockets[socket.room]);
 	socket.to(socket.room).broadcast.emit("playerLeaveUpdate", {
 		allRoomSockets: allSockets[socket.room]
 	});
@@ -42,6 +39,11 @@ const socketController = (socket, io) => {
 	// ========================= for all games ====================================
 	socket.on("redirectToGame", ({ game }) => {
 		socket.to(socket.room).broadcast.emit("redirectedToGame", { game });
+	});
+
+	// send chess or checkers move
+	socket.on("movePlayed", ({ cellsClicked }) => {
+		socket.to(socket.room).broadcast.emit("opponentPlayedAMove", { cellsClicked });
 	});
 	// ========================= for all games ====================================
 
@@ -101,19 +103,18 @@ const socketController = (socket, io) => {
 
 	// ================== for chess ===================================
 	socket.on("getChessPieceColor", () => {
-		socket.emit("setChessPieceColor", { chessPieceColor: socket.chessPieceColor });
+		socket.emit("setChessPieceColor", {
+			chessPieceColor: getPieceColor(allSockets, socket.room, "chess")
+		});
 	});
 
-	socket.on("movePlayed", ({ cellsClicked }) => {
-		console.log("opponentPlayedAMove", cellsClicked);
-		socket.broadcast.emit("opponentPlayedAMove", { cellsClicked });
-	});
 	// ================== end for chess ===================================
 
 	// =================== for CHECKERS =================================================
 	socket.on("getCheckersPieceColor", () => {
+		// let pieceColor = getPieceColor(allSockets, socket.room, "checkers");
 		socket.emit("setCheckersPieceColor", {
-			checkersPieceColor: getPieceColor(allSockets, socket.room, "checkers")
+			checkersPieceColor: socket.checkersPieceColor
 		});
 	});
 	// =================== end for CHECKERS =================================================

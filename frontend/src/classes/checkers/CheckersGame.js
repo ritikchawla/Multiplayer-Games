@@ -33,9 +33,7 @@ class CheckersGame {
 
 	showValidMoves = (userColor, board, row, col) => {
 		if (
-			!userColor &&
 			board[row][col] instanceof CheckersPiece &&
-			this.numClicks === 0 &&
 			board[row][col].color !== userColor
 		)
 			return;
@@ -108,7 +106,7 @@ class CheckersGame {
 		}
 	};
 
-	movePiece = (board, clickedCells, validPieceMoves) => {
+	movePiece = (board, clickedCells, validPieceMoves = null) => {
 		// clicked cells is basically this.cellsClicked, but we take it as a
 		// parameter so that we can also use it for sockets
 
@@ -116,6 +114,10 @@ class CheckersGame {
 
 		const [rowi, rowf] = rows;
 		const [coli, colf] = cols;
+
+		if (!validPieceMoves) {
+			validPieceMoves = board[rowi][coli].validMoves(board);
+		}
 
 		if (validPieceMoves[this.getStr(rowf, colf)] === "valid") {
 			// not a capturing move

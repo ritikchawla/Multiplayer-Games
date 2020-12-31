@@ -14,26 +14,24 @@ export const getPieceColor = (allSockets, roomId, game) => {
 	let chessColor = "white",
 		checkersColor = "red";
 
+	console.log("inside get piece color = ", allSockets);
+
 	for (let i = 0; i < allSockets[roomId].length; i++) {
 		let socket = allSockets[roomId][i];
 		if (game === "chess" && socket.room === roomId) {
 			if (!socket.chessPieceColor) {
-				socket.chessPieceColor = chessColor;
 				return chessColor;
-			}
-			if (socket.chessPieceColor === "white") {
+			} else if (socket.chessPieceColor === "white") {
 				chessColor = "black";
 				return chessColor;
 			}
-		} else if (game === "checkers" && socket.room === roomId) {
-			if (!socket.checkersPieceColor) {
-				socket.checkersPieceColor = checkersColor;
-				return checkersColor;
-			}
+		}
 
-			if (socket.checkersPieceColor === "red") {
+		if (game === "checkers" && socket.room === roomId) {
+			if (!socket.checkersPieceColor) {
+				return checkersColor;
+			} else if (socket.checkersPieceColor === "red") {
 				checkersColor = "white";
-				socket.checkersPieceColor = checkersColor;
 				return checkersColor;
 			}
 		}

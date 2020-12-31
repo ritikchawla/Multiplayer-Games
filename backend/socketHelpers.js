@@ -41,6 +41,17 @@ export const addSocketToList = (allSockets, socket) => {
 			object2["points"] = 0;
 			break;
 
+		case "checkers":
+			let socketRoom = socket.room;
+			let tempAllSockets = {};
+
+			tempAllSockets[socketRoom] = [...allSockets[socketRoom], object1];
+
+			const pieceColor = getPieceColor(tempAllSockets, socketRoom, "checkers");
+
+			object2["checkersPieceColor"] = pieceColor;
+			socket.checkersPieceColor = pieceColor;
+
 		default:
 			break;
 	}

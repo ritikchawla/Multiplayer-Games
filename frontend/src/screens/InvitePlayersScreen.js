@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
 import { io } from "socket.io-client";
+
 import DisplayPlayersInRoom from "../components/DisplayPlayersInRoom";
 import DisplayRoomId from "../components/DisplayRoomId";
 import useWindowSize from "../hooks/useWindowSize";
@@ -11,6 +11,7 @@ let socket;
 const InvitePlayersScreen = ({ match, history }) => {
 	const { username } = useSelector(state => state.user);
 	const sketchIOSockets = useSelector(state => state.sketchIOSockets);
+	const checkersSockets = useSelector(state => state.checkersSockets);
 	const dispatch = useDispatch();
 
 	const windowSize = useWindowSize();
@@ -25,6 +26,10 @@ const InvitePlayersScreen = ({ match, history }) => {
 
 		socket.on("sketchioPlayerUpdate", ({ allSocketsForRoom }) => {
 			dispatch({ type: "UPDATE_PAINTERS", payload: allSocketsForRoom });
+		});
+
+		socket.on("checkersPlayerUpdate", ({ allSocketsForRoom }) => {
+			dispatch({ type: "UPDATE_CHECKERS_PLAYERS", payload: allSocketsForRoom });
 		});
 
 		socket.on("playerLeaveUpdate", ({ allRoomSockets }) => {
@@ -68,7 +73,11 @@ const InvitePlayersScreen = ({ match, history }) => {
 			}}
 		>
 			<DisplayRoomId roomId={match.params.roomId} />
-			<DisplayPlayersInRoom allSockets={sketchIOSockets} />
+			<DisplayPlayersInRoom
+				allSockets={
+					sketchIOSockets.length > 0 ? sketchIOSockets : checkersSockets
+				}
+			/>
 			<button onClick={startGame}>Start Game</button>
 		</div>
 	);
