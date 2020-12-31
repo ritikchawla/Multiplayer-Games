@@ -12,9 +12,21 @@ export default class CheckersPiece {
 
 	getStr = (row, col) => String(row) + "," + String(col);
 
+	makeKing = () => (this.isKing = true);
+
 	setRowCol = (row, col) => {
 		this.current_row = row;
 		this.current_col = col;
+
+		if (this.row < 2) {
+			if (this.current_row === 7) {
+				this.makeKing();
+			}
+		} else {
+			if (this.current_row === 0) {
+				this.makeKing();
+			}
+		}
 	};
 
 	getCaptuingMoves = board => {
@@ -184,8 +196,6 @@ export default class CheckersPiece {
 		}
 
 		this.getCaptuingMoves(board);
-
-		console.log("this.moves =", this.moves);
 
 		return this.moves;
 	};

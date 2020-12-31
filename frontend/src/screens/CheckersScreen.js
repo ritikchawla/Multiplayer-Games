@@ -31,7 +31,7 @@ const CheckersScreen = () => {
 				payload: checkersPieceColor
 			});
 		});
-	}, [socket]);
+	}, [socket, dispatch]);
 
 	return (
 		<div style={mainDivStyles}>

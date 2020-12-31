@@ -115,6 +115,7 @@ const ChessBoard = () => {
 
 						return (
 							<Cell
+								game="chess"
 								blueDot={blueDot}
 								redDot={redDot}
 								isClicked={isClicked}

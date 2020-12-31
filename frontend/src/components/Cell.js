@@ -1,8 +1,19 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const Cell = ({ image, row, col, color, isClicked, blueDot, redDot, showMoves }) => {
+const Cell = ({
+	game,
+	image,
+	row,
+	col,
+	color,
+	isClicked,
+	blueDot,
+	redDot,
+	showMoves
+}) => {
 	const bgColor = isClicked ? "rgba(240, 147, 43, 0.5)" : null;
+	const imgDim = game === "chess" ? 70 : 50;
 
 	const divStyles = {
 		width: 70,
@@ -28,8 +39,8 @@ const Cell = ({ image, row, col, color, isClicked, blueDot, redDot, showMoves })
 	};
 
 	const imgStyle = {
-		height: 50,
-		width: 50
+		height: imgDim,
+		width: imgDim
 	};
 
 	const dotStyle = {

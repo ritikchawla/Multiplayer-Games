@@ -132,8 +132,13 @@ class CheckersGame {
 			const { row, col } = validPieceMoves[this.getStr(rowf, colf)][1];
 
 			let piece = board[rowi][coli];
+			let capturedPiece = board[row][col];
 
 			piece.setRowCol(rowf, colf);
+
+			if (capturedPiece.isKing) {
+				piece.makeKing();
+			}
 
 			// clicked cell is a valid move
 			board[rowi][coli] = 0;

@@ -51,7 +51,7 @@ const CheckersBoard = () => {
 		let tempBoard = board.map(b => b);
 		let cellsClicked = game.showValidMoves(checkersPieceColor, tempBoard, row, col);
 		setBoard(tempBoard);
-		console.log(cellsClicked);
+		// console.log(cellsClicked);
 	};
 
 	return (
@@ -90,6 +90,7 @@ const CheckersBoard = () => {
 
 							return (
 								<Cell
+									game="checkers"
 									blueDot={blueDot}
 									board={board}
 									row={ri}

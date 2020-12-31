@@ -60,7 +60,7 @@ const Chat = () => {
 	useEffect(() => {
 		// to receive the bot message that state how many users are currently in the chat
 		socket.emit("newUserJoinsChat", { username });
-	}, []);
+	}, [socket, username]);
 
 	useEffect(() => {
 		socket.on("newMessageReceived", data => {

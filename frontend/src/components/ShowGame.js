@@ -20,7 +20,7 @@ const ShowGame = ({ game, history }) => {
 	return (
 		<div id="showGameContainer">
 			<div id="showGameImageContainer">
-				<img id="gameImg" src={image} />
+				<img id="gameImg" src={image} alt={`${game}`} />
 			</div>
 			<div id="showGameButtonsContainer">
 				<button onClick={initSocket}>Create Room</button>

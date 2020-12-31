@@ -34,7 +34,7 @@ const ChessScreen = ({ location }) => {
 				payload: chessPieceColor
 			});
 		});
-	}, [socket]);
+	}, [socket, dispatch]);
 
 	return (
 		<div style={mainDivStyles}>
