@@ -98,6 +98,7 @@ class ChessGame {
 	};
 
 	setKingInCheck = (board, kingColor, lastMovedPiece) => {
+		console.log("lastMovedPiece = ", lastMovedPiece);
 		if (kingColor === "white") {
 			let kingPos = this.getStr(this.whiteKingPos[0], this.whiteKingPos[1]);
 
@@ -153,7 +154,7 @@ class ChessGame {
 				}
 			}
 
-			let str = String(row) + "," + String(col);
+			let str = this.getStr(row, col);
 			let piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
 
 			if (!(str in piece.validMoves(board, this.kingParams))) {
@@ -198,13 +199,27 @@ class ChessGame {
 		board[rowf][colf] = piece;
 
 		// set the king positions in order to help with checking for 'checks'
-		if (piece.isKing) {
+		if (piece.pieceName === "king") {
 			if (piece.color === "white") {
 				this.whiteKingPos = [piece.row, piece.col];
-			} else {
+			} else if (piece.color === "black") {
 				this.blackKingPos = [piece.row, piece.col];
 			}
 		}
+
+		// if the king was already in check, then set it to false as the current
+		// move must've blocked the check
+		if (this.whiteKingInCheck) {
+			this.whiteKingInCheck = false;
+			this.pieceCheckingWhiteKing = null;
+		}
+
+		if (this.blackKingInCheck) {
+			this.blackKingInCheck = false;
+			this.pieceCheckingBlackKing = null;
+		}
+
+		this.setKingParams();
 
 		let tcc = this.cellsClicked;
 

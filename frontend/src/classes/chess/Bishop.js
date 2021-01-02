@@ -109,10 +109,13 @@ class Bishop extends Piece {
 			colAdder = 1;
 		}
 
-		for (let row = this.row + rowAdder; row != kingRow; row += rowAdder) {
-			for (let col = this.col + colAdder; col != kingCol; col += colAdder) {
-				cellsBetweenPieces[this.getStr(row, col)] = "valid";
-			}
+		let row = this.row + rowAdder,
+			col = this.col + colAdder;
+
+		while (row !== kingRow && col !== kingCol) {
+			cellsBetweenPieces[this.getStr(row, col)] = "valid";
+			row += rowAdder;
+			col += colAdder;
 		}
 
 		return cellsBetweenPieces;

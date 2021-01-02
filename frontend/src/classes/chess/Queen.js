@@ -19,8 +19,8 @@ class Queen extends Piece {
 	};
 
 	validMoves = (board, kingParameters) => {
-		const rm = this.rook.validMoves(board);
-		const bm = this.bishop.validMoves(board);
+		const rm = this.rook.validMoves(board, kingParameters);
+		const bm = this.bishop.validMoves(board, kingParameters);
 
 		this.moves = { ...rm, ...bm };
 

@@ -1,29 +1,40 @@
-// import King from "./King";
+getCellsBetweenPieces = (kingPos, piece) => {
+	let rowAdder = 0,
+		colAdder = 0;
+	let kingRow = kingPos[0],
+		kingCol = kingPos[1];
+	let cellsBetweenPieces = {};
 
-const displayBoard = board => {
-	let string = "";
-
-	for (let row = 0; row < board.length; row++) {
-		process.stdout.write("\n");
-		for (let col = 0; col < board.length; col++) {
-			if (board[row][col] === 0) {
-				process.stdout.write(String(board[row][col]));
-			} else {
-				process.stdout.write("\x1b[32m", board[row][col]);
-			}
-		}
+	// upper left
+	if (kingRow < piece.row && kingCol < piece.col) {
+		rowAdder = -1;
+		colAdder = -1;
+	} else if (kingRow < piece.row && kingCol > piece.col) {
+		// upper right
+		rowAdder = -1;
+		colAdder = 1;
+	} else if (kingRow > piece.row && kingCol < piece.col) {
+		// lower left
+		rowAdder = 1;
+		colAdder = -1;
+	} else if (kingRow > piece.row && kingCol > piece.col) {
+		// lower right
+		rowAdder = 1;
+		colAdder = 1;
 	}
+
+	let row = piece.row + rowAdder,
+		col = piece.col + colAdder;
+
+	while (row !== kingRow && col != kingCol) {
+		cellsBetweenPieces[String(row) + "," + String(col)] = "valid";
+		row += rowAdder;
+		col += colAdder;
+	}
+
+	console.log(cellsBetweenPieces);
+
+	return cellsBetweenPieces;
 };
 
-let b = [
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, "A", 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0]
-];
-
-displayBoard(b);
+getCellsBetweenPieces([7, 3], { row: 4, col: 6 });

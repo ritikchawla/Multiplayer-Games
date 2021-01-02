@@ -36,7 +36,6 @@ class Piece {
 		let newValidMoves = {};
 
 		// handle king is being checked by every piece
-		console.log("pieceCheckingKing = ", pieceCheckingKing);
 		if (
 			pieceCheckingKing.pieceName === "knight" ||
 			pieceCheckingKing.pieceName === "pawn"
@@ -44,12 +43,14 @@ class Piece {
 			// only way to escape a Knight's or a Pawn's check is to either move the king,
 			// or to capture the Knight or Pawn
 			if (
-				!(
-					this.getStr(pieceCheckingKing.row, pieceCheckingKing.col) in
-					this.validMoves
-				)
+				!(this.getStr(pieceCheckingKing.row, pieceCheckingKing.col) in this.moves)
 			) {
 				return {};
+			} else {
+				let move = this.getStr(pieceCheckingKing.row, pieceCheckingKing.col);
+				newValidMoves[move] = "capturing";
+				console.log("new valide moves = ", newValidMoves);
+				return newValidMoves;
 			}
 		}
 
@@ -60,6 +61,9 @@ class Piece {
 		Object.keys(this.moves).forEach(key => {
 			if (key in cellsBetweenPieces) {
 				newValidMoves[key] = "valid";
+			}
+			if (key === this.getStr(pieceCheckingKing.row, pieceCheckingKing.col)) {
+				newValidMoves[key] = "capturing";
 			}
 		});
 
