@@ -37,4 +37,4 @@ getCellsBetweenPieces = (kingPos, piece) => {
 	return cellsBetweenPieces;
 };
 
-getCellsBetweenPieces([7, 3], { row: 4, col: 6 });
+getCellsBetweenPieces([6, 3], { row: 4, col: 1 });

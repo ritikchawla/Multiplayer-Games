@@ -7,7 +7,8 @@ class King extends Piece {
 		this.image = `images/chess/${this.color}King.png`;
 		this.isKing = true;
 	}
-	validMoves = board => {
+
+	validMoves = (board, kingParameters) => {
 		this.resetMoves();
 
 		// vertical
@@ -90,6 +91,8 @@ class King extends Piece {
 				this.moves[String(this.row) + "," + String(this.col - 1)] = "capturing";
 			}
 		}
+
+		this.checkIfKingInCheck(kingParameters);
 
 		return this.moves;
 	};

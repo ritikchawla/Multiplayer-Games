@@ -6,6 +6,7 @@ class Piece {
 		this.moves = {};
 		this.isBeingAttacked = false;
 		this.isClicked = false;
+		this.pieceName = "";
 	}
 
 	checkIfKingInCheck = kingParameters => {
@@ -49,7 +50,6 @@ class Piece {
 			} else {
 				let move = this.getStr(pieceCheckingKing.row, pieceCheckingKing.col);
 				newValidMoves[move] = "capturing";
-				console.log("new valide moves = ", newValidMoves);
 				return newValidMoves;
 			}
 		}
@@ -58,14 +58,33 @@ class Piece {
 		// this way we can check if a move exists that blocks the check
 		const cellsBetweenPieces = pieceCheckingKing.getCellsBetweenPieces(kingPos);
 
-		Object.keys(this.moves).forEach(key => {
-			if (key in cellsBetweenPieces) {
-				newValidMoves[key] = "valid";
-			}
-			if (key === this.getStr(pieceCheckingKing.row, pieceCheckingKing.col)) {
-				newValidMoves[key] = "capturing";
-			}
-		});
+		if (this.pieceName === "king") {
+			console.log("inside if ");
+			// if it is the king then it has to move
+			Object.keys(this.moves).forEach(key => {
+				if (!(key in cellsBetweenPieces)) {
+					// if the move is not a check blocking move
+					newValidMoves[key] = "valid";
+				}
+
+				// can only capture with the king if the piece being captured is not
+				// being protected by one of it's own pieces
+				if (key === this.getStr(pieceCheckingKing.row, pieceCheckingKing.col)) {
+					newValidMoves[key] = "capturing";
+				}
+			});
+		} else {
+			// if it's not the king then it can block the check
+			console.log("inside else");
+			Object.keys(this.moves).forEach(key => {
+				if (key in cellsBetweenPieces) {
+					newValidMoves[key] = "valid";
+				}
+				if (key === this.getStr(pieceCheckingKing.row, pieceCheckingKing.col)) {
+					newValidMoves[key] = "capturing";
+				}
+			});
+		}
 
 		return newValidMoves;
 	};
