@@ -5,16 +5,26 @@ import Piece from "./ChessPiece";
 class Queen extends Piece {
 	constructor(color, row, col) {
 		super(color, row, col);
+		this.pieceName = "queen";
 		this.rook = new Rook(this.color, this.row, this.col);
 		this.bishop = new Bishop(this.color, this.row, this.col);
 		this.image = `images/chess/${this.color}Queen.png`;
 	}
 
-	validMoves = board => {
+	getCellsBetweenPieces = kingPos => {
+		const rooks = this.rook.getCellsBetweenPieces(kingPos);
+		const bishop = this.bishop.getCellsBetweenPieces(kingPos);
+
+		return { ...rooks, ...bishop };
+	};
+
+	validMoves = (board, kingParameters) => {
 		const rm = this.rook.validMoves(board);
 		const bm = this.bishop.validMoves(board);
 
-		this.moves = Object.assign({}, rm, bm);
+		this.moves = { ...rm, ...bm };
+
+		// don't have to do this.checkIfKingInCheck as rook and bishop take care of that
 
 		return this.moves;
 	};

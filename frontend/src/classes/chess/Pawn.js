@@ -4,10 +4,11 @@ class Pawn extends Piece {
 	constructor(color, row, col) {
 		super(color, row, col);
 		this.hasMoved = false;
+		this.pieceName = "pawn";
 		this.image = `images/chess/${this.color}Pawn.png`;
 	}
 
-	validMoves = board => {
+	validMoves = (board, kingParameters) => {
 		this.resetMoves();
 
 		const adder = this.color === "black" ? 1 : -1;
@@ -44,6 +45,8 @@ class Pawn extends Piece {
 				}
 			}
 		}
+
+		this.checkIfKingInCheck(kingParameters);
 
 		return this.moves;
 	};

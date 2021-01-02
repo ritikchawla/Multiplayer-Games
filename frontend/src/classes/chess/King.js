@@ -3,6 +3,8 @@ import Piece from "./ChessPiece";
 class King extends Piece {
 	constructor(color, row, col) {
 		super(color, row, col);
+		this.pieceName = "king";
+
 		this.image = `images/chess/${this.color}King.png`;
 		this.isKing = true;
 	}

@@ -3,9 +3,48 @@ import Piece from "./ChessPiece";
 class Rook extends Piece {
 	constructor(color, row, col) {
 		super(color, row, col);
+		this.pieceName = "rook";
+
 		this.image = `images/chess/${this.color}Rook.png`;
 	}
-	validMoves = board => {
+
+	getCellsBetweenPieces = kingPos => {
+		let rowAdder = 0,
+			colAdder = 0;
+
+		let kingRow = kingPos[0],
+			kingCol = kingPos[1];
+
+		let cellsBetweenPieces = {};
+
+		// up
+		if (kingRow < this.row && kingCol === this.col) {
+			rowAdder = -1;
+			colAdder = 0;
+		} else if (kingRow > this.row && kingCol === this.col) {
+			//down
+			rowAdder = 1;
+			colAdder = 0;
+		} else if (kingRow === this.row && kingCol < this.col) {
+			// left
+			rowAdder = 0;
+			colAdder = -1;
+		} else if (kingRow === this.row && kingCol > this.col) {
+			// right
+			rowAdder = 0;
+			colAdder = 1;
+		}
+
+		for (let row = this.row + rowAdder; row != kingRow; row += rowAdder) {
+			for (let col = this.col + colAdder; col != kingCol; col += colAdder) {
+				cellsBetweenPieces[this.getStr(row, col)] = "valid";
+			}
+		}
+
+		return cellsBetweenPieces;
+	};
+
+	validMoves = (board, kingParameters) => {
 		this.resetMoves();
 
 		// go outwards from the current row, i.e iterate through columns
@@ -61,6 +100,8 @@ class Rook extends Piece {
 
 			this.moves[String(r) + "," + String(this.col)] = "valid";
 		}
+
+		this.checkIfKingInCheck(kingParameters);
 
 		return this.moves;
 	};

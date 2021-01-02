@@ -3,6 +3,8 @@ import Piece from "./ChessPiece";
 class Bishop extends Piece {
 	constructor(color, row, col) {
 		super(color, row, col);
+		this.pieceName = "bishop";
+
 		this.image = `images/chess/${this.color}Bishop.png`;
 	}
 
@@ -82,9 +84,38 @@ class Bishop extends Piece {
 		}
 	};
 
-	handleKingInCheck = (board, kingParameters) => {
-		// the king of the same color is in check
-		let { kingPos, pieceCheckingKing } = kingParameters;
+	getCellsBetweenPieces = kingPos => {
+		let rowAdder = 0,
+			colAdder = 0;
+		let kingRow = kingPos[0],
+			kingCol = kingPos[1];
+		let cellsBetweenPieces = {};
+
+		// upper left
+		if (kingRow < this.row && kingCol < this.col) {
+			rowAdder = -1;
+			colAdder = -1;
+		} else if (kingRow < this.row && kingCol > this.col) {
+			// upper right
+			rowAdder = -1;
+			colAdder = 1;
+		} else if (kingRow > this.row && kingCol < this.col) {
+			// lower left
+			rowAdder = 1;
+			colAdder = -1;
+		} else if (kingRow > this.row && kingCol > this.col) {
+			// lower right
+			rowAdder = 1;
+			colAdder = 1;
+		}
+
+		for (let row = this.row + rowAdder; row != kingRow; row += rowAdder) {
+			for (let col = this.col + colAdder; col != kingCol; col += colAdder) {
+				cellsBetweenPieces[this.getStr(row, col)] = "valid";
+			}
+		}
+
+		return cellsBetweenPieces;
 	};
 
 	validMoves = (board, kingParameters) => {
@@ -95,23 +126,7 @@ class Bishop extends Piece {
 		this.upperLeft(board);
 		this.lowerLeft(board);
 
-		let { whiteKingInCheck, blackKingInCheck } = kingParameters;
-
-		if (this.color === "white" && whiteKingInCheck) {
-			let { whiteKingPos, pieceCheckingWhiteKing } = kingParameters;
-			this.handleKingInCheck(board, {
-				kingPos: whiteKingPos,
-				pieceCheckingKing: pieceCheckingWhiteKing
-			});
-		}
-
-		if (this.color === "black" && blackKingInCheck) {
-			let { blackKingPos, pieceCheckingBlackKing } = kingParameters;
-			this.handleKingInCheck(board, {
-				kingPos: blackKingPos,
-				pieceCheckingKing: pieceCheckingBlackKing
-			});
-		}
+		this.checkIfKingInCheck(kingParameters);
 
 		return this.moves;
 	};

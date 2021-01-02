@@ -3,9 +3,11 @@ import Piece from "./ChessPiece";
 class Knight extends Piece {
 	constructor(color, row, col) {
 		super(color, row, col);
+		this.pieceName = "knight";
 		this.image = `images/chess/${this.color}Knight.png`;
 	}
-	validMoves = board => {
+
+	validMoves = (board, kingParameters) => {
 		this.resetMoves();
 
 		let arrC = [-2, -1, 1, 2];
@@ -46,6 +48,8 @@ class Knight extends Piece {
 				}
 			}
 		}
+
+		this.checkIfKingInCheck(kingParameters);
 
 		return this.moves;
 	};

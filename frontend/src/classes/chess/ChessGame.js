@@ -13,7 +13,10 @@ class ChessGame {
 		this.pieceCheckingWhiteKing = null;
 		this.pieceCheckingBlackKing = null;
 		this.kingParams = {};
+		this.gameOver = false;
 	}
+
+	getStr = (row, col) => String(row) + "," + String(col);
 
 	/*
     parameters to pass to validmoves function
@@ -96,19 +99,19 @@ class ChessGame {
 
 	setKingInCheck = (board, kingColor, lastMovedPiece) => {
 		if (kingColor === "white") {
-			let kingPos =
-				String(this.whiteKingPos[0]) + "," + String(this.whiteKingPos[1]);
+			let kingPos = this.getStr(this.whiteKingPos[0], this.whiteKingPos[1]);
 
-			if (kingPos in lastMovedPiece.validMoves(board)) {
+			if (kingPos in lastMovedPiece.validMoves(board, this.kingParams)) {
 				this.whiteKingInCheck = true;
+				this.pieceCheckingWhiteKing = lastMovedPiece;
 			}
 		} else if (kingColor === "black") {
-			let kingPos =
-				String(this.blackKingPos[0]) + "," + String(this.blackKingPos[1]);
+			let kingPos = this.getStr(this.blackKingPos[0], this.blackKingPos[1]);
 
-			if (kingPos in lastMovedPiece.validMoves(board)) {
+			if (kingPos in lastMovedPiece.validMoves(board, this.kingParams)) {
 				// need to set this to false somewhere
 				this.blackKingInCheck = true;
+				this.pieceCheckingBlackKing = lastMovedPiece;
 			}
 		}
 
@@ -153,7 +156,7 @@ class ChessGame {
 			let str = String(row) + "," + String(col);
 			let piece = board[this.cellsClicked.rows[0]][this.cellsClicked.cols[0]];
 
-			if (!(str in piece.validMoves(board))) {
+			if (!(str in piece.validMoves(board, this.kingParams))) {
 				return;
 			}
 
@@ -209,6 +212,60 @@ class ChessGame {
 		this.changeTurn();
 
 		return tcc;
+	};
+
+	colorHasMovesLeft = (board, color) => {
+		for (let row = 0; row < board.length; row++) {
+			for (let col = 0; col < board.length; col++) {
+				if (
+					board[row][col] !== 0 &&
+					board[row][col] !== "dot" &&
+					board[row][col].color === color
+				) {
+					if (
+						Object.keys(
+							board[row][col].validMoves(board, this.kingParams) > 0
+						)
+					) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	};
+
+	blackWins = () => {
+		this.gameOver = true;
+		this.winner = "black";
+		return this.gameOver;
+	};
+
+	whiteWins = () => {
+		this.gameOver = true;
+		this.winner = "white";
+		return this.gameOver;
+	};
+
+	isGameOver = board => {
+		if (this.redPiecesOnBoard === 0) {
+			return this.whiteWins();
+		}
+
+		if (this.whitePiecesOnBoard === 0) {
+			return this.blackWins();
+		}
+
+		if (!this.colorHasMovesLeft(board, "white")) {
+			return this.blackWins();
+		}
+
+		if (!this.colorHasMovesLeft(board, "red")) {
+			return this.whiteWins();
+		}
+
+		return false;
 	};
 
 	changeTurn = () => {

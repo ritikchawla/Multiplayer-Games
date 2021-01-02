@@ -197,11 +197,11 @@ class CheckersGame {
 	};
 
 	isGameOver = board => {
-		if (this.redPiecesOnBoard === 7) {
+		if (this.redPiecesOnBoard === 0) {
 			return this.whiteWins();
 		}
 
-		if (this.whitePiecesOnBoard === 7) {
+		if (this.whitePiecesOnBoard === 0) {
 			return this.redWins();
 		}
 

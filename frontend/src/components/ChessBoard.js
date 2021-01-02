@@ -63,6 +63,12 @@ const ChessBoard = () => {
 	const { socket } = useSelector(state => state.socket);
 	const { chessPieceColor } = useSelector(state => state.user);
 
+	const [gameOver, setGameOver] = useState({
+		gameOver: false,
+		winnerName: null,
+		winnerColor: null
+	});
+
 	useEffect(() => {
 		socket.on("opponentPlayedAMove", ({ cellsClicked }) => {
 			let tempBoard = board.map(b => b);
@@ -77,6 +83,10 @@ const ChessBoard = () => {
 
 		// console.log(tempCellsClicked);
 		setBoard(tempBoard);
+
+		if (game.isGameOver(board)) {
+			console.log("game over ", game.winner, " won");
+		}
 
 		// only return when len(tempCellsClicked.rows === 2) as we don't want to
 		// show the opponent's moves to the player
