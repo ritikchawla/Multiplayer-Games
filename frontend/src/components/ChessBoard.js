@@ -9,6 +9,7 @@ import Bishop from "../classes/chess/Bishop";
 import King from "../classes/chess/King";
 import Queen from "../classes/chess/Queen";
 import ChessGame from "../classes/chess/ChessGame";
+import GameOverComponent from "./GameOverComponent";
 
 const game = new ChessGame();
 
@@ -61,7 +62,8 @@ const ChessBoard = () => {
 	]);
 
 	const { socket } = useSelector(state => state.socket);
-	const { chessPieceColor } = useSelector(state => state.user);
+	const { chessPieceColor, username } = useSelector(state => state.user);
+	const chessSockets = useSelector(state => state.chessSockets);
 
 	const [gameOver, setGameOver] = useState({
 		gameOver: false,
@@ -79,25 +81,50 @@ const ChessBoard = () => {
 			game.movePiece(tempBoard, cellsClicked);
 			setBoard(tempBoard);
 		});
+
+		socket.on("gameHasEnded", gameOverObject => setGameOver(gameOverObject));
 	}, [socket]);
 
-	const showMoves = (row, col) => {
-		let tempBoard = board.map(b => b);
-		let tempCellsClicked = game.showValidMoves(chessPieceColor, tempBoard, row, col);
+	const getPlayerName = player => {
+		// player can be self or opponent
+		if (player === "self") return username;
 
-		// console.log(tempCellsClicked);
-		setBoard(tempBoard);
-
-		if (game.isGameOver(board)) {
-			console.log("game over ", game.winner, " won");
+		for (let i = 0; i < chessSockets.length; i++) {
+			if (
+				chessSockets[i].chessPieceColor &&
+				chessSockets[i].chessPieceColor !== chessPieceColor
+			) {
+				return chessSockets[i].username;
+			}
 		}
+	};
 
-		// only return when len(tempCellsClicked.rows === 2) as we don't want to
-		// show the opponent's moves to the player
-		if (tempCellsClicked && false) {
-			// cancelling for now
-			if (tempCellsClicked.rows.length === 2) {
-				socket.emit("movePlayed", { cellsClicked: tempCellsClicked });
+	const showMoves = (row, col) => {
+		if (!gameOver.gameOver) {
+			let tempBoard = board.map(b => b);
+			let cellsClicked = game.showValidMoves(chessPieceColor, tempBoard, row, col);
+
+			setBoard(tempBoard);
+
+			if (cellsClicked && cellsClicked.rows.length === 2) {
+				socket.emit("movePlayed", { cellsClicked });
+			}
+
+			let isGameOver = game.isGameOver(board);
+
+			if (isGameOver) {
+				let newGameOverObject = {
+					gameOver: true,
+					winnerColor: game.winner,
+					winnerName:
+						game.winner === chessPieceColor
+							? getPlayerName("self")
+							: getPlayerName("opponent")
+				};
+
+				socket.emit("gameOver", newGameOverObject);
+
+				setGameOver(newGameOverObject);
 			}
 		}
 	};
@@ -148,13 +175,27 @@ const ChessBoard = () => {
 	};
 
 	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: chessPieceColor === "white" ? "column" : "column-reverse"
-			}}
-		>
-			{showChessBoard(chessPieceColor)}
+		<div>
+			<div>{getPlayerName("opponent")}</div>
+
+			<div id="checkersBoard" style={{ position: "relative" }}>
+				{gameOver.gameOver && (
+					<GameOverComponent
+						winnerColor={gameOver.winnerColor}
+						winnerName={gameOver.winnerName}
+					/>
+				)}
+				<div
+					style={{
+						display: "flex",
+						flexDirection:
+							chessPieceColor === "white" ? "column" : "column-reverse"
+					}}
+				>
+					{showChessBoard(chessPieceColor)}
+				</div>
+			</div>
+			<div>{getPlayerName("opponent")}</div>
 		</div>
 	);
 };

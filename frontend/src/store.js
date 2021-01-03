@@ -2,6 +2,7 @@ import { createStore, combineReducers } from "redux";
 import { userReducer } from "./reducers/userReducers";
 import {
 	checkersSocketsReducer,
+	chessSocketsReducer,
 	sketchIOSocketsReducer,
 	socketReducer
 } from "./reducers/socketReducers";
@@ -11,7 +12,8 @@ const reducers = combineReducers({
 	user: userReducer,
 	socket: socketReducer,
 	sketchIOSockets: sketchIOSocketsReducer,
-	checkersSockets: checkersSocketsReducer
+	checkersSockets: checkersSocketsReducer,
+	chessSockets: chessSocketsReducer
 });
 
 const socketFromLocalStorage = localStorage.getItem("socket")

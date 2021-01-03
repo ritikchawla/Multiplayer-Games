@@ -110,7 +110,7 @@ const socketController = (socket, io) => {
 	// ================== for chess ===================================
 	socket.on("getChessPieceColor", () => {
 		socket.emit("setChessPieceColor", {
-			chessPieceColor: getPieceColor(allSockets, socket.room, "chess")
+			chessPieceColor: socket.chessPieceColor
 		});
 	});
 

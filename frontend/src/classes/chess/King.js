@@ -12,13 +12,8 @@ class King extends Piece {
 		// not allow king to capture a protected piece
 		let newValidMoves = {};
 		const { cellsUnderAttackByWhite, cellsUnderAttackByBlack } = kingParameters;
-		console.log(kingParameters);
 		const cellsUnderAttack =
 			this.color === "white" ? cellsUnderAttackByBlack : cellsUnderAttackByWhite;
-
-		console.log("-----------------------------------------------");
-		console.log("this.moves king = ", this.moves);
-		console.log(cellsUnderAttack);
 
 		const moveKeys = Object.keys(this.moves);
 		const otherKeys = Object.keys(cellsUnderAttack);
@@ -35,8 +30,6 @@ class King extends Piece {
 				newValidMoves[moveKeys[i]] = this.moves[moveKeys[i]];
 			}
 		}
-
-		console.log("valid moves king = ", newValidMoves);
 
 		return newValidMoves;
 	};

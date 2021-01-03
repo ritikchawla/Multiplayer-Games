@@ -12,6 +12,7 @@ const InvitePlayersScreen = ({ match, history }) => {
 	const { username } = useSelector(state => state.user);
 	const sketchIOSockets = useSelector(state => state.sketchIOSockets);
 	const checkersSockets = useSelector(state => state.checkersSockets);
+	const chessSockets = useSelector(state => state.chessSockets);
 	const dispatch = useDispatch();
 
 	const windowSize = useWindowSize();
@@ -30,6 +31,10 @@ const InvitePlayersScreen = ({ match, history }) => {
 
 		socket.on("checkersPlayerUpdate", ({ allSocketsForRoom }) => {
 			dispatch({ type: "UPDATE_CHECKERS_PLAYERS", payload: allSocketsForRoom });
+		});
+
+		socket.on("chessPlayerUpdate", ({ allSocketsForRoom }) => {
+			dispatch({ type: "UPDATE_CHESS_PLAYERS", payload: allSocketsForRoom });
 		});
 
 		socket.on("playerLeaveUpdate", ({ allRoomSockets }) => {
@@ -75,7 +80,11 @@ const InvitePlayersScreen = ({ match, history }) => {
 			<DisplayRoomId roomId={match.params.roomId} />
 			<DisplayPlayersInRoom
 				allSockets={
-					sketchIOSockets.length > 0 ? sketchIOSockets : checkersSockets
+					sketchIOSockets.length > 0
+						? sketchIOSockets
+						: checkersSockets.length > 0
+						? checkersSockets
+						: chessSockets
 				}
 			/>
 			<button onClick={startGame}>Start Game</button>

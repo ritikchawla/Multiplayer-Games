@@ -83,7 +83,6 @@ class ChessGame {
 
 	showValidMoves = (userColor, board, row, col) => {
 		if (
-			!userColor &&
 			board[row][col] instanceof Piece &&
 			this.numClicks === 0 &&
 			board[row][col].color !== userColor
@@ -308,15 +307,10 @@ class ChessGame {
 	colorHasMovesLeft = (board, color) => {
 		for (let row = 0; row < board.length; row++) {
 			for (let col = 0; col < board.length; col++) {
-				if (
-					board[row][col] !== 0 &&
-					board[row][col] !== "dot" &&
-					board[row][col].color === color
-				) {
+				if (board[row][col] instanceof Piece && board[row][col].color === color) {
 					if (
-						Object.keys(
-							board[row][col].validMoves(board, this.kingParams) > 0
-						)
+						Object.keys(board[row][col].validMoves(board, this.kingParams))
+							.length > 0
 					) {
 						return true;
 					}

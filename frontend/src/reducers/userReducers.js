@@ -6,11 +6,11 @@ export const userReducer = (state = {}, action) => {
 
 		case "SET_CHESS_PIECE_COLOR":
 			const toReturn1 = { ...state, chessPieceColor: action.payload };
+			console.log(toReturn1);
 			return toReturn1;
 
 		case "SET_CHECKERS_PIECE_COLOR":
 			const toReturn2 = { ...state, checkersPieceColor: action.payload };
-			console.log(toReturn2);
 			return toReturn2;
 
 		default:
