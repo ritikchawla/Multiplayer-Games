@@ -8,6 +8,11 @@ class Pawn extends Piece {
 		this.image = `images/chess/${this.color}Pawn.png`;
 	}
 
+	capturingMoves = board => {
+		let capturingMoves = {};
+		const adder = this.color === "black" ? 1 : -1;
+	};
+
 	validMoves = (board, kingParameters) => {
 		this.resetMoves();
 
@@ -22,25 +27,31 @@ class Pawn extends Piece {
 
 		if (this.row + adder >= 0 && this.row + adder < 8) {
 			if (board[this.row + adder][this.col] === 0) {
-				this.moves[String(this.row + adder) + "," + String(this.col)] = "valid";
+				this.moves[this.getStr(this.row + adder, this.col)] = "valid";
 			}
 
 			// capturing moves
 			if (this.col + 1 < 8) {
 				if (board[this.row + adder][this.col + 1] !== 0) {
 					if (board[this.row + adder][this.col + 1].color !== this.color) {
-						this.moves[
-							String(this.row + adder) + "," + String(this.col + 1)
-						] = "capturing";
+						this.moves[this.getStr(this.row + adder, this.col + 1)] =
+							"capturing";
+					} else {
+						this.protectingMoves[
+							this.getStr(this.row + adder, this.col + 1)
+						] = "protecting";
 					}
 				}
 			}
 			if (this.col - 1 >= 0) {
 				if (board[this.row + adder][this.col - 1] !== 0) {
 					if (board[this.row + adder][this.col - 1].color !== this.color) {
-						this.moves[
-							String(this.row + adder) + "," + String(this.col - 1)
-						] = "capturing";
+						this.moves[this.getStr(this.row + adder, this.col - 1)] =
+							"capturing";
+					} else {
+						this.protectingMoves[
+							this.getStr(this.row + adder, this.col - 1)
+						] = "protecting";
 					}
 				}
 			}

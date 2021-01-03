@@ -35,13 +35,18 @@ class Rook extends Piece {
 			colAdder = 1;
 		}
 
-		for (let row = this.row + rowAdder; row !== kingRow; row += rowAdder) {
+		if (rowAdder !== 0) {
+			for (let row = this.row + rowAdder; row !== kingRow; row += rowAdder) {
+				cellsBetweenPieces[this.getStr(row, this.col)] = "valid";
+			}
+		}
+		if (colAdder !== 0) {
 			for (let col = this.col + colAdder; col !== kingCol; col += colAdder) {
-				cellsBetweenPieces[this.getStr(row, col)] = "valid";
+				cellsBetweenPieces[this.getStr(this.row, col)] = "valid";
 			}
 		}
 
-		console.log(cellsBetweenPieces);
+		console.log("rook cellsBetweenPieces = ", cellsBetweenPieces);
 
 		return cellsBetweenPieces;
 	};
@@ -53,54 +58,58 @@ class Rook extends Piece {
 		for (let c = this.col - 1; c >= 0; c--) {
 			if (board[this.row][c] !== 0) {
 				if (board[this.row][c].color === this.color) {
+					this.protectingMoves[this.getStr(this.row, c)] = "protecting";
 					break;
 				} else {
-					this.moves[String(this.row) + "," + String(c)] = "capturing";
+					this.moves[this.getStr(this.row, c)] = "capturing";
 					break;
 				}
 			}
 
-			this.moves[String(this.row) + "," + String(c)] = "valid";
+			this.moves[this.getStr(this.row, c)] = "valid";
 		}
 
 		for (let c = this.col + 1; c < 8; c++) {
 			if (board[this.row][c] !== 0) {
 				if (board[this.row][c].color === this.color) {
+					this.protectingMoves[this.getStr(this.row, c)] = "protecting";
 					break;
 				} else {
-					this.moves[String(this.row) + "," + String(c)] = "capturing";
+					this.moves[this.getStr(this.row, c)] = "capturing";
 					break;
 				}
 			}
 
-			this.moves[String(this.row) + "," + String(c)] = "valid";
+			this.moves[this.getStr(this.row, c)] = "valid";
 		}
 
 		// go outwards from the current column, i.e iterate through rows
 		for (let r = this.row - 1; r >= 0; r--) {
 			if (board[r][this.col] !== 0) {
 				if (board[r][this.col].color === this.color) {
+					this.protectingMoves[this.getStr(r, this.col)] = "protecting";
 					break;
 				} else {
-					this.moves[String(r) + "," + String(this.col)] = "capturing";
+					this.moves[this.getStr(r, this.col)] = "capturing";
 					break;
 				}
 			}
 
-			this.moves[String(r) + "," + String(this.col)] = "valid";
+			this.moves[this.getStr(r, this.col)] = "valid";
 		}
 
 		for (let r = this.row + 1; r < 8; r++) {
 			if (board[r][this.col] !== 0) {
 				if (board[r][this.col].color === this.color) {
+					this.protectingMoves[this.getStr(r, this.col)] = "protecting";
 					break;
 				} else if (board[r][this.col].color !== this.color) {
-					this.moves[String(r) + "," + String(this.col)] = "capturing";
+					this.moves[this.getStr(r, this.col)] = "capturing";
 					break;
 				}
 			}
 
-			this.moves[String(r) + "," + String(this.col)] = "valid";
+			this.moves[this.getStr(r, this.col)] = "valid";
 		}
 
 		this.checkIfKingInCheck(kingParameters);

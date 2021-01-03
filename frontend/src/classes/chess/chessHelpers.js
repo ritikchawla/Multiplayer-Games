@@ -1,40 +1,45 @@
-getCellsBetweenPieces = (kingPos, piece) => {
+getStr = (a, b) => String(a) + "," + String(b);
+getCellsBetweenPieces = (piece, kingPos) => {
 	let rowAdder = 0,
 		colAdder = 0;
+
 	let kingRow = kingPos[0],
 		kingCol = kingPos[1];
+
 	let cellsBetweenPieces = {};
 
-	// upper left
-	if (kingRow < piece.row && kingCol < piece.col) {
+	// up
+	if (kingRow < piece.row && kingCol === piece.col) {
 		rowAdder = -1;
-		colAdder = -1;
-	} else if (kingRow < piece.row && kingCol > piece.col) {
-		// upper right
-		rowAdder = -1;
-		colAdder = 1;
-	} else if (kingRow > piece.row && kingCol < piece.col) {
-		// lower left
+		colAdder = 0;
+	} else if (kingRow > piece.row && kingCol === piece.col) {
+		//down
 		rowAdder = 1;
+		colAdder = 0;
+	} else if (kingRow === piece.row && kingCol < piece.col) {
+		// left
+		rowAdder = 0;
 		colAdder = -1;
-	} else if (kingRow > piece.row && kingCol > piece.col) {
-		// lower right
-		rowAdder = 1;
+	} else if (kingRow === piece.row && kingCol > piece.col) {
+		// right
+		rowAdder = 0;
 		colAdder = 1;
 	}
 
-	let row = piece.row + rowAdder,
-		col = piece.col + colAdder;
-
-	while (row !== kingRow && col != kingCol) {
-		cellsBetweenPieces[String(row) + "," + String(col)] = "valid";
-		row += rowAdder;
-		col += colAdder;
+	if (rowAdder !== 0) {
+		for (let row = this.row + rowAdder; row !== kingRow; row += rowAdder) {
+			cellsBetweenPieces[this.getStr(row, col)] = "valid";
+		}
+	}
+	if (colAdder !== 0) {
+		for (let col = this.col + colAdder; col !== kingCol; col += colAdder) {
+			cellsBetweenPieces[this.getStr(row, col)] = "valid";
+		}
 	}
 
-	console.log(cellsBetweenPieces);
+	console.log("rook cellsBetweenPieces = ", cellsBetweenPieces);
 
 	return cellsBetweenPieces;
 };
 
-getCellsBetweenPieces([6, 3], { row: 4, col: 1 });
+getCellsBetweenPieces({ row: 3, col: 0 }, [0, 3]);

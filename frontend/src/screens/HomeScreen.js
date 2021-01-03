@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import ChessBoard from "../classes/chess/board/Board";
 
 import "../styles/HomeScreenStyles.css";
 

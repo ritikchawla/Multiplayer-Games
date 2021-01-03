@@ -16,14 +16,15 @@ class Bishop extends Piece {
 
 			if (board[r][c] !== 0) {
 				if (board[r][c].color === this.color) {
+					this.protectingMoves[this.getStr(r, c)] = "protecting";
 					return;
 				} else {
-					this.moves[String(r) + "," + String(c)] = "capturing";
+					this.moves[this.getStr(r, c)] = "capturing";
 					return;
 				}
 			}
 
-			this.moves[String(r) + "," + String(c)] = "valid";
+			this.moves[this.getStr(r, c)] = "valid";
 		}
 	};
 
@@ -35,14 +36,15 @@ class Bishop extends Piece {
 
 			if (board[r][c] !== 0) {
 				if (board[r][c].color === this.color) {
+					this.protectingMoves[this.getStr(r, c)] = "protecting";
 					return;
 				} else {
-					this.moves[String(r) + "," + String(c)] = "capturing";
+					this.moves[this.getStr(r, c)] = "capturing";
 					return;
 				}
 			}
 
-			this.moves[String(r) + "," + String(c)] = "valid";
+			this.moves[this.getStr(r, c)] = "valid";
 		}
 	};
 
@@ -54,14 +56,15 @@ class Bishop extends Piece {
 
 			if (board[r][c] !== 0) {
 				if (board[r][c].color === this.color) {
+					this.protectingMoves[this.getStr(r, c)] = "protecting";
 					return;
 				} else {
-					this.moves[String(r) + "," + String(c)] = "capturing";
+					this.moves[this.getStr(r, c)] = "capturing";
 					return;
 				}
 			}
 
-			this.moves[String(r) + "," + String(c)] = "valid";
+			this.moves[this.getStr(r, c)] = "valid";
 		}
 	};
 
@@ -73,14 +76,16 @@ class Bishop extends Piece {
 
 			if (board[r][c] !== 0) {
 				if (board[r][c].color === this.color) {
+					this.protectingMoves[this.getStr(r, c)] = "protecting";
+
 					return;
 				} else {
-					this.moves[String(r) + "," + String(c)] = "capturing";
+					this.moves[this.getStr(r, c)] = "capturing";
 					return;
 				}
 			}
 
-			this.moves[String(r) + "," + String(c)] = "valid";
+			this.moves[this.getStr(r, c)] = "valid";
 		}
 	};
 

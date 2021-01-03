@@ -4,6 +4,7 @@ class Piece {
 		this.row = row;
 		this.col = col;
 		this.moves = {};
+		this.protectingMoves = {};
 		this.isBeingAttacked = false;
 		this.isClicked = false;
 		this.pieceName = "";
@@ -22,8 +23,9 @@ class Piece {
 		}
 
 		if (this.color === "black" && blackKingInCheck) {
-			console.log(kingParameters);
 			let { blackKingPos, pieceCheckingBlackKing } = kingParameters;
+			console.log(pieceCheckingBlackKing);
+			console.log(kingParameters);
 			this.moves = this.handleKingInCheck({
 				kingPos: blackKingPos,
 				pieceCheckingKing: pieceCheckingBlackKing
@@ -96,6 +98,7 @@ class Piece {
 
 	resetMoves = () => {
 		this.moves = {};
+		this.protectingMoves = {};
 	};
 
 	getStr = (row, col) => String(row) + "," + String(col);

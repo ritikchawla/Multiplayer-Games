@@ -1,3 +1,4 @@
+import ChessBoard from "./board/Board";
 import Piece from "./ChessPiece";
 
 class ChessGame {
@@ -14,6 +15,12 @@ class ChessGame {
 		this.pieceCheckingBlackKing = null;
 		this.kingParams = {};
 		this.gameOver = false;
+		this.winner = null;
+
+		// key = row,col of the piece
+		// value = piece.validMoves()
+		this.cellsUnderAttackByWhite = {};
+		this.cellsUnderAttackByBlack = {};
 	}
 
 	getStr = (row, col) => String(row) + "," + String(col);
@@ -98,7 +105,6 @@ class ChessGame {
 	};
 
 	setKingInCheck = (board, kingColor, lastMovedPiece) => {
-		console.log("lastMovedPiece = ", lastMovedPiece);
 		if (kingColor === "white") {
 			let kingPos = this.getStr(this.whiteKingPos[0], this.whiteKingPos[1]);
 
@@ -128,6 +134,8 @@ class ChessGame {
 
 		this.setKingParams();
 	};
+
+	setAttackedCellsByColor = color => {};
 
 	select = (board, row, col) => {
 		// console.log("select called");
@@ -221,6 +229,9 @@ class ChessGame {
 
 		this.setKingParams();
 
+		// get protecting moves of the piece
+		piece.validMoves(board, this.kingParams);
+
 		let tcc = this.cellsClicked;
 
 		this.clearDots(board);
@@ -264,19 +275,11 @@ class ChessGame {
 	};
 
 	isGameOver = board => {
-		if (this.redPiecesOnBoard === 0) {
-			return this.whiteWins();
-		}
-
-		if (this.whitePiecesOnBoard === 0) {
-			return this.blackWins();
-		}
-
 		if (!this.colorHasMovesLeft(board, "white")) {
 			return this.blackWins();
 		}
 
-		if (!this.colorHasMovesLeft(board, "red")) {
+		if (!this.colorHasMovesLeft(board, "black")) {
 			return this.whiteWins();
 		}
 

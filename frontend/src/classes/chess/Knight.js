@@ -20,30 +20,34 @@ class Knight extends Piece {
 				// ---
 
 				if (this.row - arrR[i] >= 0) {
-					if (board[this.row - arrR[i]][this.col + arrC[i]] === 0) {
-						this.moves[
-							String(this.row - arrR[i]) + "," + String(this.col + arrC[i])
-						] = "valid";
-					} else if (
-						board[this.row - arrR[i]][this.col + arrC[i]].color !== this.color
-					) {
-						this.moves[
-							String(this.row - arrR[i]) + "," + String(this.col + arrC[i])
-						] = "capturing";
+					const cell = board[this.row - arrR[i]][this.col + arrC[i]];
+
+					if (cell === 0) {
+						this.moves[this.getStr(this.row - arrR[i], this.col + arrC[i])] =
+							"valid";
+					} else if (cell.color !== this.color) {
+						this.moves[this.getStr(this.row - arrR[i], this.col + arrC[i])] =
+							"capturing";
+					} else if (cell.color === this.color) {
+						this.protectingMoves[
+							this.getStr(this.row - arrR[i], this.col + arrC[i])
+						] = "protecting";
 					}
 				}
 
 				if (this.row + arrR[i] < 8) {
-					if (board[this.row + arrR[i]][this.col + arrC[i]] === 0) {
-						this.moves[
-							String(this.row + arrR[i]) + "," + String(this.col + arrC[i])
-						] = "valid";
-					} else if (
-						board[this.row + arrR[i]][this.col + arrC[i]].color !== this.color
-					) {
-						this.moves[
-							String(this.row + arrR[i]) + "," + String(this.col + arrC[i])
-						] = "capturing";
+					const cell = board[this.row + arrR[i]][this.col + arrC[i]];
+
+					if (cell === 0) {
+						this.moves[this.getStr(this.row + arrR[i], this.col + arrC[i])] =
+							"valid";
+					} else if (cell.color !== this.color) {
+						this.moves[this.getStr(this.row + arrR[i], this.col + arrC[i])] =
+							"capturing";
+					} else if (cell.color === this.color) {
+						this.protectingMoves[
+							this.getStr(this.row + arrR[i], this.col + arrC[i])
+						] = "protecting";
 					}
 				}
 			}

@@ -13,19 +13,28 @@ class Queen extends Piece {
 
 	getCellsBetweenPieces = kingPos => {
 		const rooks = this.rook.getCellsBetweenPieces(kingPos);
-		const bishop = this.bishop.getCellsBetweenPieces(kingPos);
+		const bishops = this.bishop.getCellsBetweenPieces(kingPos);
 
-		return { ...rooks, ...bishop };
+		console.log("rooks = ", rooks);
+		console.log("bishops = ", bishops);
+
+		return { ...rooks, ...bishops };
 	};
 
 	validMoves = (board, kingParameters) => {
+		this.resetMoves();
+
 		const rm = this.rook.validMoves(board, kingParameters);
 		const bm = this.bishop.validMoves(board, kingParameters);
 
 		this.moves = { ...rm, ...bm };
 
-		// don't have to do this.checkIfKingInCheck as rook and bishop take care of that
+		this.protectingMoves = {
+			...this.rook.protectingMoves,
+			...this.bishop.protectingMoves
+		};
 
+		// don't have to do this.checkIfKingInCheck as rook and bishop take care of that
 		return this.moves;
 	};
 
