@@ -8,7 +8,38 @@ class King extends Piece {
 		this.isKing = true;
 	}
 
-	notAllowKingToMoveToAttackedCell = () => {};
+	notAllowKingToMoveToAttackedCell = kingParameters => {
+		// not allow king to capture a protected piece
+		let newValidMoves = {};
+		const { cellsUnderAttackByWhite, cellsUnderAttackByBlack } = kingParameters;
+		console.log(kingParameters);
+		const cellsUnderAttack =
+			this.color === "white" ? cellsUnderAttackByBlack : cellsUnderAttackByWhite;
+
+		console.log("-----------------------------------------------");
+		console.log("this.moves king = ", this.moves);
+		console.log(cellsUnderAttack);
+
+		const moveKeys = Object.keys(this.moves);
+		const otherKeys = Object.keys(cellsUnderAttack);
+
+		for (let i = 0; i < moveKeys.length; i++) {
+			let moveAllowed = true;
+			for (let j = 0; j < otherKeys.length; j++) {
+				if (moveKeys[i] in cellsUnderAttack[otherKeys[j]]) {
+					moveAllowed = false;
+					break;
+				}
+			}
+			if (moveAllowed) {
+				newValidMoves[moveKeys[i]] = this.moves[moveKeys[i]];
+			}
+		}
+
+		console.log("valid moves king = ", newValidMoves);
+
+		return newValidMoves;
+	};
 
 	validMoves = (board, kingParameters) => {
 		this.resetMoves();
@@ -107,7 +138,7 @@ class King extends Piece {
 		}
 
 		this.checkIfKingInCheck(kingParameters);
-		this.notAllowKingToMoveToAttackedCell();
+		this.moves = this.notAllowKingToMoveToAttackedCell(kingParameters);
 
 		return this.moves;
 	};

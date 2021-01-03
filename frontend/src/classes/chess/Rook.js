@@ -40,13 +40,12 @@ class Rook extends Piece {
 				cellsBetweenPieces[this.getStr(row, this.col)] = "valid";
 			}
 		}
+
 		if (colAdder !== 0) {
 			for (let col = this.col + colAdder; col !== kingCol; col += colAdder) {
 				cellsBetweenPieces[this.getStr(this.row, col)] = "valid";
 			}
 		}
-
-		console.log("rook cellsBetweenPieces = ", cellsBetweenPieces);
 
 		return cellsBetweenPieces;
 	};

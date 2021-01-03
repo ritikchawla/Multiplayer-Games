@@ -1,4 +1,3 @@
-import ChessBoard from "./board/Board";
 import Piece from "./ChessPiece";
 
 class ChessGame {
@@ -7,8 +6,8 @@ class ChessGame {
 		this.numClicks = 0;
 		this.turn = "white";
 		this.selected = null;
-		this.whiteKingPos = [7, 3];
-		this.blackKingPos = [0, 3];
+		this.whiteKingPos = [7, 4];
+		this.blackKingPos = [0, 4];
 		this.whiteKingInCheck = false;
 		this.blackKingInCheck = false;
 		this.pieceCheckingWhiteKing = null;
@@ -21,6 +20,8 @@ class ChessGame {
 		// value = piece.validMoves()
 		this.cellsUnderAttackByWhite = {};
 		this.cellsUnderAttackByBlack = {};
+
+		this.setKingParams();
 	}
 
 	getStr = (row, col) => String(row) + "," + String(col);
@@ -40,7 +41,9 @@ class ChessGame {
 			whiteKingPos: this.whiteKingPos,
 			blackKingPos: this.blackKingPos,
 			pieceCheckingWhiteKing: this.pieceCheckingWhiteKing,
-			pieceCheckingBlackKing: this.pieceCheckingBlackKing
+			pieceCheckingBlackKing: this.pieceCheckingBlackKing,
+			cellsUnderAttackByWhite: this.cellsUnderAttackByWhite,
+			cellsUnderAttackByBlack: this.cellsUnderAttackByBlack
 		};
 	};
 
@@ -65,6 +68,7 @@ class ChessGame {
 	};
 
 	showDots = (board, moves) => {
+		//	console.log(moves);
 		Object.keys(moves).forEach(key => {
 			// key = row,col
 			const [row, col] = key.split(",").map(k => Number(k));
@@ -135,7 +139,67 @@ class ChessGame {
 		this.setKingParams();
 	};
 
-	setAttackedCellsByColor = color => {};
+	setInitiallyAttackedCells = board => {
+		for (let row = 0; row < board.length; row++) {
+			for (let col = 0; col < board.length; col++) {
+				if (board[row][col] instanceof Piece) {
+					let piece = board[row][col];
+					let str = this.getStr(piece.row, piece.col);
+					let attackedCells = {};
+
+					// this will set piece.moves and piece.protectingMoves
+					if (piece.pieceName !== "pawn")
+						piece.validMoves(board, this.kingParams);
+					else piece.validMoves(board, this.kingParams, true);
+
+					let totalMoves = { ...piece.moves, ...piece.protectingMoves };
+
+					Object.keys(totalMoves).forEach(key => {
+						if (board[row][col].pieceName === "pawn") {
+							// as pawn's valid moves aren't its capturing moves
+							if (totalMoves[key] !== "valid") {
+								attackedCells[key] = totalMoves[key];
+							}
+						} else {
+							attackedCells[key] = totalMoves[key];
+						}
+					});
+
+					if (piece.color === "white") {
+						this.cellsUnderAttackByWhite[str] = attackedCells;
+					} else {
+						this.cellsUnderAttackByBlack[str] = attackedCells;
+					}
+				}
+			}
+		}
+	};
+
+	setAttackedCellsByPiece = (board, piece) => {
+		let movesToReplace = {};
+		const str = this.getStr(piece.row, piece.col);
+
+		if (piece.pieceName === "pawn") {
+			piece.validMoves(board, this.kingParams, true);
+			let newMoves = { ...piece.moves, ...piece.protectingMoves };
+
+			Object.keys(newMoves).forEach(key => {
+				if (newMoves[key] !== "valid") {
+					movesToReplace[key] = newMoves[key];
+				}
+			});
+		} else {
+			console.log("setting new moves for piece = ", piece);
+			piece.validMoves(board, this.kingParams);
+			movesToReplace = { ...piece.moves, ...piece.protectingMoves };
+		}
+
+		if (piece.color === "white") {
+			this.cellsUnderAttackByWhite[str] = movesToReplace;
+		} else {
+			this.cellsUnderAttackByBlack[str] = movesToReplace;
+		}
+	};
 
 	select = (board, row, col) => {
 		// console.log("select called");
@@ -229,8 +293,9 @@ class ChessGame {
 
 		this.setKingParams();
 
-		// get protecting moves of the piece
-		piece.validMoves(board, this.kingParams);
+		// get moves and protecting moves of the piece after it has moved
+		// in order to set the 'attacked' squares
+		this.setInitiallyAttackedCells(board);
 
 		let tcc = this.cellsClicked;
 

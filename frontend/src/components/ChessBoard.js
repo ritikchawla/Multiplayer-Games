@@ -18,8 +18,8 @@ const ChessBoard = () => {
 			new Rook("black", 0, 0),
 			new Knight("black", 0, 1),
 			new Bishop("black", 0, 2),
-			new King("black", 0, 3),
-			new Queen("black", 0, 4),
+			new Queen("black", 0, 3),
+			new King("black", 0, 4),
 			new Bishop("black", 0, 5),
 			new Knight("black", 0, 6),
 			new Rook("black", 0, 7)
@@ -52,8 +52,8 @@ const ChessBoard = () => {
 			new Rook("white", 7, 0),
 			new Knight("white", 7, 1),
 			new Bishop("white", 7, 2),
-			new King("white", 7, 3),
-			new Queen("white", 7, 4),
+			new Queen("white", 7, 3),
+			new King("white", 7, 4),
 			new Bishop("white", 7, 5),
 			new Knight("white", 7, 6),
 			new Rook("white", 7, 7)
@@ -68,6 +68,10 @@ const ChessBoard = () => {
 		winnerName: null,
 		winnerColor: null
 	});
+
+	useEffect(() => {
+		game.setInitiallyAttackedCells(board);
+	}, []);
 
 	useEffect(() => {
 		socket.on("opponentPlayedAMove", ({ cellsClicked }) => {
@@ -104,7 +108,7 @@ const ChessBoard = () => {
 				<div style={{ margin: 0, padding: 0, display: "flex" }} key={`row${ri}`}>
 					{row.map((col, ci) => {
 						let color =
-							(ri + ci) % 2 === 0 ? "rgb(195,105,56)" : "rgb(239, 206,163)";
+							(ri + ci) % 2 !== 0 ? "rgb(195,105,56)" : "rgb(239, 206,163)";
 
 						let piece = board[ri][ci];
 						let blueDot, redDot, isClicked;

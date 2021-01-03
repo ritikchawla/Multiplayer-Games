@@ -15,9 +15,6 @@ class Queen extends Piece {
 		const rooks = this.rook.getCellsBetweenPieces(kingPos);
 		const bishops = this.bishop.getCellsBetweenPieces(kingPos);
 
-		console.log("rooks = ", rooks);
-		console.log("bishops = ", bishops);
-
 		return { ...rooks, ...bishops };
 	};
 

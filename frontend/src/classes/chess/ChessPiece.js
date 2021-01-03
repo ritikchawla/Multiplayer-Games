@@ -24,8 +24,6 @@ class Piece {
 
 		if (this.color === "black" && blackKingInCheck) {
 			let { blackKingPos, pieceCheckingBlackKing } = kingParameters;
-			console.log(pieceCheckingBlackKing);
-			console.log(kingParameters);
 			this.moves = this.handleKingInCheck({
 				kingPos: blackKingPos,
 				pieceCheckingKing: pieceCheckingBlackKing
@@ -61,7 +59,7 @@ class Piece {
 		const cellsBetweenPieces = pieceCheckingKing.getCellsBetweenPieces(kingPos);
 
 		if (this.pieceName === "king") {
-			console.log("inside if ");
+			// console.log("inside if ");
 			// if it is the king then it has to move
 			Object.keys(this.moves).forEach(key => {
 				if (!(key in cellsBetweenPieces)) {
@@ -77,7 +75,7 @@ class Piece {
 			});
 		} else {
 			// if it's not the king then it can block the check
-			console.log("inside else");
+			//console.log("inside else");
 			Object.keys(this.moves).forEach(key => {
 				if (key in cellsBetweenPieces) {
 					newValidMoves[key] = "valid";
