@@ -19,8 +19,9 @@ const InvitePlayersScreen = ({ match, history }) => {
 
 	useEffect(() => {
 		let room = match.params.roomId;
+		let PORT = process.env.PORT || 3000;
 
-		socket = io("localhost:3000");
+		socket = io(`${window.location.hostname}:${PORT}`);
 
 		socket.emit("newConnection", { username, room });
 		dispatch({ type: "SET_SOCKET", payload: socket });

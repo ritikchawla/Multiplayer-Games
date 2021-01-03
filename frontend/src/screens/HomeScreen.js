@@ -5,7 +5,6 @@ import "../styles/HomeScreenStyles.css";
 
 const HomeScreen = ({ history }) => {
 	const dispatch = useDispatch();
-
 	const homeDivStyles = {
 		backgroundColor: "white",
 		padding: "3rem 2rem",

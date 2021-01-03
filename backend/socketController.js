@@ -5,6 +5,7 @@ import { addSocketToList, chooseNewPainter } from "./socketHelpers.js";
 let allSockets = {};
 let colorIncrementor = 1;
 let wordToPaint = null;
+let currentPainter = null;
 
 const sendInviteScreenPlayerUpdate = (socket, io) => {
 	io.to(socket.room).emit(`${socket.roomName}PlayerUpdate`, {

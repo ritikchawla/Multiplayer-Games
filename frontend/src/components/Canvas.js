@@ -84,9 +84,9 @@ const Canvas = () => {
 			});
 		};
 
-		socket.on("sketchioPlayerUpdate", ({ allSketchIOSockets }) => {
-			dispatch({ type: "UPDATE_PAINTERS", payload: allSketchIOSockets });
-			addPainterToPointsList(allSketchIOSockets);
+		socket.on("sketchioPlayerUpdate", ({ allSocketsForRoom }) => {
+			dispatch({ type: "UPDATE_PAINTERS", payload: allSocketsForRoom });
+			addPainterToPointsList(allSocketsForRoom);
 		});
 
 		socket.on("painterHasBeenChosen", ({ painter, word }) => {
