@@ -82,6 +82,12 @@ const ChessBoard = () => {
 			setBoard(tempBoard);
 		});
 
+		socket.on("opponentCastled", ({ cellsClicked }) => {
+			let tempBoard = board.map(b => b);
+			game.movePiece(tempBoard, cellsClicked);
+			setBoard(tempBoard);
+		});
+
 		socket.on("gameHasEnded", gameOverObject => setGameOver(gameOverObject));
 	}, [socket]);
 
@@ -102,13 +108,21 @@ const ChessBoard = () => {
 	const showMoves = (row, col) => {
 		if (!gameOver.gameOver) {
 			let tempBoard = board.map(b => b);
-			let cellsClicked = game.showValidMoves(chessPieceColor, tempBoard, row, col);
+			let returnedValue = game.showValidMoves(chessPieceColor, tempBoard, row, col);
+
+			if (returnedValue) {
+				const { cellsClicked, castlingDone, pawnPromoted } = returnedValue;
+
+				if (cellsClicked && cellsClicked.rows.length === 2) {
+					if (!castlingDone && !pawnPromoted)
+						socket.emit("movePlayed", { cellsClicked });
+					else if (castlingDone) {
+						socket.emit("castlingDone", { cellsClicked });
+					}
+				}
+			}
 
 			setBoard(tempBoard);
-
-			if (cellsClicked && cellsClicked.rows.length === 2) {
-				socket.emit("movePlayed", { cellsClicked });
-			}
 
 			let isGameOver = game.isGameOver(board);
 

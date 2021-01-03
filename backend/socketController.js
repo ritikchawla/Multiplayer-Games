@@ -114,11 +114,14 @@ const socketController = (socket, io) => {
 		});
 	});
 
+	socket.on("castlingDone", ({ cellsClicked }) => {
+		socket.to(socket.room).broadcast.emit("opponentCastled", { cellsClicked });
+	});
+
 	// ================== end for chess ===================================
 
 	// =================== for CHECKERS =================================================
 	socket.on("getCheckersPieceColor", () => {
-		// let pieceColor = getPieceColor(allSockets, socket.room, "checkers");
 		socket.emit("setCheckersPieceColor", {
 			checkersPieceColor: socket.checkersPieceColor
 		});

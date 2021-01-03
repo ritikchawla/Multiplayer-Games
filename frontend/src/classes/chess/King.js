@@ -1,4 +1,5 @@
 import Piece from "./ChessPiece";
+import Rook from "./Rook";
 
 class King extends Piece {
 	constructor(color, row, col) {
@@ -6,6 +7,7 @@ class King extends Piece {
 		this.pieceName = "king";
 		this.image = `images/chess/${this.color}King.png`;
 		this.isKing = true;
+		this.hasMoved = false;
 	}
 
 	notAllowKingToMoveToAttackedCell = kingParameters => {
@@ -32,6 +34,82 @@ class King extends Piece {
 		}
 
 		return newValidMoves;
+	};
+
+	isPathBetweenRookAndKingBlocked = (board, rookColor) => {
+		const row = rookColor === "white" ? 7 : 0;
+		const blockedPath = { leftBlocked: false, rightBlocked: false };
+
+		const leftCols = [1, 2, 3];
+		const rightCols = [5, 6];
+
+		leftCols.forEach(col => {
+			if (board[row][col] instanceof Piece) blockedPath.leftBlocked = true;
+		});
+
+		rightCols.forEach(col => {
+			if (board[row][col] instanceof Piece) blockedPath.rightBlocked = true;
+		});
+
+		return blockedPath;
+	};
+
+	isRookPresent = (board, rookColor) => {
+		const row = rookColor === "white" ? 7 : 0;
+
+		if (!(board[row][0] instanceof Rook) && !(board[row][7] instanceof Rook))
+			return false;
+		else if (board[row][0] instanceof Rook && board[row][0].hasMoved) return false;
+		else if (board[row][7] instanceof Rook && board[row][7].hasMoved) return false;
+
+		return true;
+	};
+
+	addCastlingMoves = (board, kingParameters) => {
+		const { whiteKingInCheck, blackKingInCheck } = kingParameters;
+
+		if (this.hasMoved) return;
+
+		if (this.color === "white") {
+			// if there's an unmoved Rook
+			if (whiteKingInCheck) return;
+
+			// if there's no rook then return
+			if (!this.isRookPresent(board, this.color)) return;
+
+			// if any piece is blocking the path between both rooks and king, return
+			const { leftBlocked, rightBlocked } = this.isPathBetweenRookAndKingBlocked(
+				board,
+				this.color
+			);
+
+			if (leftBlocked && rightBlocked) return; // both paths are blocked
+
+			if (!leftBlocked) {
+				this.moves[this.getStr(this.row, this.col - 2)] = "castling";
+			}
+
+			if (!rightBlocked) {
+				this.moves[this.getStr(this.row, this.col + 2)] = "castling";
+			}
+		} else {
+			if (blackKingInCheck) return;
+			if (!this.isRookPresent(board, this.color)) return;
+			const { leftBlocked, rightBlocked } = this.isPathBetweenRookAndKingBlocked(
+				board,
+				this.color
+			);
+
+			if (leftBlocked && rightBlocked) return;
+
+			if (!leftBlocked) {
+				this.moves[this.getStr(this.row, this.col - 2)] = "castling";
+			}
+
+			if (!rightBlocked) {
+				this.moves[this.getStr(this.row, this.col + 2)] = "castling";
+			}
+		}
 	};
 
 	validMoves = (board, kingParameters) => {
@@ -130,10 +208,19 @@ class King extends Piece {
 			}
 		}
 
+		// castling
+		this.addCastlingMoves(board, kingParameters);
+
 		this.checkIfKingInCheck(kingParameters);
 		this.moves = this.notAllowKingToMoveToAttackedCell(kingParameters);
 
 		return this.moves;
+	};
+
+	setRowCol = (row, col) => {
+		this.row = row;
+		this.col = col;
+		this.hasMoved = true;
 	};
 
 	display() {

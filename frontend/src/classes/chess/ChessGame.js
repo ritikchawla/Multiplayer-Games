@@ -1,4 +1,6 @@
 import Piece from "./ChessPiece";
+import King from "./King";
+import Pawn from "./Pawn";
 
 class ChessGame {
 	constructor() {
@@ -77,6 +79,8 @@ class ChessGame {
 				board[row][col] = "dot";
 			} else if (moves[key] === "capturing") {
 				board[row][col].isBeingAttacked = true;
+			} else if (moves[key] === "castling") {
+				board[row][col] = "dot";
 			}
 		});
 	};
@@ -105,6 +109,10 @@ class ChessGame {
 		let tempCellsClicked = this.select(board, row, col);
 
 		return tempCellsClicked;
+	};
+
+	handlePawnPromotion = (board, pawn) => {
+		if (!pawn.row === 0 || !pawn.row === 7) return;
 	};
 
 	setKingInCheck = (board, kingColor, lastMovedPiece) => {
@@ -253,6 +261,8 @@ class ChessGame {
 	movePiece = (board, clickedCells) => {
 		// clicked cells is basically this.cellsClicked, but we take it as a
 		// parameter so that we can also use it for sockets
+		let castlingDone = false,
+			pawnPromoted = false;
 
 		let { rows, cols } = clickedCells;
 
@@ -261,16 +271,20 @@ class ChessGame {
 
 		let piece = board[rowi][coli];
 
-		// console.log(piece);
+		if (piece instanceof King && (colf === coli + 2 || colf === coli - 2)) {
+			// castling move played
+			this.castleKing(board, clickedCells);
+			castlingDone = true;
+		} else {
+			// clicked cell is a valid move
+			board[rowi][coli] = 0;
+			board[rowf][colf] = piece;
+		}
 
 		piece.setRowCol(rowf, colf);
 
-		// clicked cell is a valid move
-		board[rowi][coli] = 0;
-		board[rowf][colf] = piece;
-
 		// set the king positions in order to help with checking for 'checks'
-		if (piece.pieceName === "king") {
+		if (piece instanceof King) {
 			if (piece.color === "white") {
 				this.whiteKingPos = [piece.row, piece.col];
 			} else if (piece.color === "black") {
@@ -292,6 +306,10 @@ class ChessGame {
 
 		this.setKingParams();
 
+		if (piece instanceof Pawn) {
+			// this.handlePawnPromotion(piece);
+		}
+
 		// get moves and protecting moves of the piece after it has moved
 		// in order to set the 'attacked' squares
 		this.setInitiallyAttackedCells(board);
@@ -301,7 +319,34 @@ class ChessGame {
 		this.clearDots(board);
 		this.changeTurn();
 
-		return tcc;
+		return { cellsClicked: tcc, castlingDone, pawnPromoted };
+	};
+
+	castleKing = (board, clickedCells) => {
+		let { rows, cols } = clickedCells;
+
+		const [rowi, rowf] = rows;
+		const [coli, colf] = cols;
+
+		const king = board[rowi][coli];
+
+		// if colf < coli, then king was moved left
+		// colf > coli = king side castling, i.e castling right
+		// colf < coli = queen side castling, i.e. castling left
+		const rookCol = colf < coli ? 0 : 7;
+		const colAdder = colf < coli ? 1 : -1;
+
+		let rook = board[rowi][rookCol];
+
+		// move the king
+		board[rowf][colf] = king;
+		board[rowi][coli] = 0;
+
+		// move the rook to the right of the king
+		board[rowf][colf + colAdder] = rook;
+		board[rowi][rookCol] = 0;
+
+		rook.setRowCol(rowf, colf + colAdder);
 	};
 
 	colorHasMovesLeft = (board, color) => {

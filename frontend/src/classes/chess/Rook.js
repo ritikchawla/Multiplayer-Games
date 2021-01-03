@@ -4,7 +4,7 @@ class Rook extends Piece {
 	constructor(color, row, col) {
 		super(color, row, col);
 		this.pieceName = "rook";
-
+		this.hasMoved = false;
 		this.image = `images/chess/${this.color}Rook.png`;
 	}
 
@@ -114,6 +114,12 @@ class Rook extends Piece {
 		this.checkIfKingInCheck(kingParameters);
 
 		return this.moves;
+	};
+
+	setRowCol = (row, col) => {
+		this.row = row;
+		this.col = col;
+		this.hasMoved = true;
 	};
 }
 
