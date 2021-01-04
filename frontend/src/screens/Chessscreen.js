@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import ChessBoard from "../components/ChessBoard";
-import Chat from "../components/Chat";
+import ChessBoard from "./src/components/ChessBoard";
+import Chat from "./src/components/Chat";
 
-const ChessScreen = ({ location }) => {
+const ChessScreen = () => {
 	const dispatch = useDispatch();
 	const { socket } = useSelector(state => state.socket);
 

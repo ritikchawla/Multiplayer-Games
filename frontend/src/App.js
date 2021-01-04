@@ -1,9 +1,9 @@
 import React from "react";
-import ChessScreen from "./screens/ChessScreen";
-import CheckersScreen from "./screens/CheckersScreen";
-
 import { Switch, Route } from "react-router-dom";
+
 import HomeScreen from "./screens/HomeScreen";
+import CheckersScreen from "./screens/CheckersScreen";
+import ChessScreen from "../Chessscreen";
 import GamesScreen from "./screens/GamesScreen";
 import SketchIOScreen from "./screens/SketchIOScreen";
 import InvitePlayersScreen from "./screens/InvitePlayersScreen";
