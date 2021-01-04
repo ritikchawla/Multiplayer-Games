@@ -95,6 +95,7 @@ class King extends Piece {
 		} else {
 			if (blackKingInCheck) return;
 			if (!this.isRookPresent(board, this.color)) return;
+
 			const { leftBlocked, rightBlocked } = this.isPathBetweenRookAndKingBlocked(
 				board,
 				this.color

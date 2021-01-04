@@ -183,10 +183,10 @@ class ChessGame {
 		// in order to set the 'attacked' squares
 		this.setInitiallyAttackedCells(board);
 
-		this.setKingInCheck(board, this.turn, board[rowf][colf]);
-
 		this.clearDots(board);
 		this.changeTurn();
+
+		this.setKingInCheck(board, this.turn, board[rowf][colf]);
 	};
 
 	setKingInCheck = (board, kingColor, lastMovedPiece) => {
@@ -221,6 +221,9 @@ class ChessGame {
 	};
 
 	setInitiallyAttackedCells = board => {
+		this.cellsUnderAttackByBlack = {};
+		this.cellsUnderAttackByWhite = {};
+
 		for (let row = 0; row < board.length; row++) {
 			for (let col = 0; col < board.length; col++) {
 				if (board[row][col] instanceof Piece) {
@@ -320,13 +323,14 @@ class ChessGame {
 
 			let tempCellsClicked = this.movePiece(board, this.cellsClicked);
 
-			// check if king is in check
-			// as the previous move might have been by white, and after movePiece()
-			// changes the turn, now it's black's turn and we need to check if
-			// black king is in check
-			// the piece has moved and it's row and columns have been changed so there
-			// is no point in passing the previously calculated moves to this function
-			this.setKingInCheck(board, this.turn, piece);
+			console.log(
+				board[this.blackKingPos[0]][this.blackKingPos[1]].validMoves(
+					board,
+					this.kingParams
+				)
+			);
+
+			console.log(this.cellsUnderAttackByWhite);
 
 			return tempCellsClicked;
 		}
@@ -396,6 +400,14 @@ class ChessGame {
 
 		this.clearDots(board);
 		this.changeTurn();
+
+		// check if king is in check
+		// as the previous move might have been by white, and after movePiece()
+		// changes the turn, now it's black's turn and we need to check if
+		// black king is in check
+		// the piece has moved and it's row and columns have been changed so there
+		// is no point in passing the previously calculated moves to this function
+		this.setKingInCheck(board, this.turn, piece);
 
 		return { cellsClicked: tcc, castlingDone, pawnPromoted };
 	};
