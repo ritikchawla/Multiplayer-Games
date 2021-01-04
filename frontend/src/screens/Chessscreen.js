@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import ChessBoard from "./src/components/ChessBoard";
-import Chat from "./src/components/Chat";
+import ChessBoard from "../components/ChessBoard";
+import Chat from "../components/Chat";
 
 const ChessScreen = () => {
 	const dispatch = useDispatch();
