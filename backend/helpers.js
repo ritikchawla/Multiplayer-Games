@@ -14,8 +14,6 @@ export const getPieceColor = (allSockets, roomId, game) => {
 	let chessColor = "white",
 		checkersColor = "red";
 
-	console.log("inside get piece color = ", allSockets);
-
 	for (let i = 0; i < allSockets[roomId].length; i++) {
 		let socket = allSockets[roomId][i];
 		if (game === "chess" && socket.room === roomId) {

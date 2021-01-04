@@ -72,7 +72,6 @@ const Canvas = () => {
 			pointsList.innerHTML = "<p id='pointsListHeading'>Players</p>";
 
 			allSketchIOSockets.forEach(socket => {
-				console.log("addPainterToPointsList");
 				const div = document.createElement("div");
 				div.className = "pointsListItem";
 				div.innerHTML = `

@@ -122,8 +122,6 @@ const ChessBoard = () => {
 		let { cellsClicked } = showPawnPromotionDialog;
 		let tempBoard = board.map(b => b);
 
-		console.log(tempBoard);
-
 		socket.emit("pawnPromoted", { pieceName, cellsClicked });
 
 		// the pawn has been moved at this point
@@ -162,7 +160,6 @@ const ChessBoard = () => {
 				}
 			}
 
-			console.log("setting board to temp board");
 			setBoard(tempBoard);
 
 			if (game.isGameOver(board)) {

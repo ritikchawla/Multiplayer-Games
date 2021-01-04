@@ -82,7 +82,6 @@ const socketController = (socket, io) => {
 
 		// word was guessed correctly in the sketchio game
 		if (socket.roomName === "sketchio") {
-			console.log("wordToPaint =", wordToPaint);
 			if (inputMessage.toLowerCase() === wordToPaint) {
 				socket.points += 5;
 

@@ -16,7 +16,6 @@ export const sketchIOSocketsReducer = (state = [], action) => {
 
 		case "UPDATE_PAINTER_INFO":
 			return state.map(s => {
-				console.log(s);
 				if (s.id === action.payload.id) {
 					return action.payload;
 				} else {

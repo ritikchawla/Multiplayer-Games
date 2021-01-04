@@ -14,7 +14,6 @@ class Piece {
 		let { whiteKingInCheck, blackKingInCheck } = kingParameters;
 
 		if (this.color === "white" && whiteKingInCheck) {
-			console.log(kingParameters);
 			let { whiteKingPos, pieceCheckingWhiteKing } = kingParameters;
 			this.moves = this.handleKingInCheck({
 				kingPos: whiteKingPos,

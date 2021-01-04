@@ -24,7 +24,6 @@ const CheckersScreen = () => {
 		socket.emit("getCheckersPieceColor");
 
 		socket.on("setCheckersPieceColor", ({ checkersPieceColor }) => {
-			console.log(checkersPieceColor);
 			// do this somewhere else when you have more games
 			dispatch({
 				type: "SET_CHECKERS_PIECE_COLOR",

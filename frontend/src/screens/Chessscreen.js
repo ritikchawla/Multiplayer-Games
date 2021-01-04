@@ -22,13 +22,10 @@ const ChessScreen = ({ location }) => {
 	}, []);
 
 	useEffect(() => {
-		console.log("chess screen use effect called");
-
 		socket.emit("getChessPieceColor");
 
 		socket.on("setChessPieceColor", ({ chessPieceColor }) => {
 			// do this somewhere else when you have more games
-			console.log("chessPieceColor = ", chessPieceColor);
 			dispatch({
 				type: "SET_CHESS_PIECE_COLOR",
 				payload: chessPieceColor

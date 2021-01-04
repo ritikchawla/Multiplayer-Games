@@ -124,7 +124,6 @@ class ChessGame {
 	};
 
 	changePawnToPiece = (board, promoteTo, color, rowf, colf) => {
-		console.log("changePawnToPiece color = ", color);
 		switch (promoteTo) {
 			case "queen":
 				board[rowf][colf] = new Queen(color, rowf, colf);
@@ -273,7 +272,6 @@ class ChessGame {
 				}
 			});
 		} else {
-			console.log("setting new moves for piece = ", piece);
 			piece.validMoves(board, this.kingParams);
 			movesToReplace = { ...piece.moves, ...piece.protectingMoves };
 		}
@@ -322,15 +320,6 @@ class ChessGame {
 			this.cellsClicked.cols.push(col);
 
 			let tempCellsClicked = this.movePiece(board, this.cellsClicked);
-
-			console.log(
-				board[this.blackKingPos[0]][this.blackKingPos[1]].validMoves(
-					board,
-					this.kingParams
-				)
-			);
-
-			console.log(this.cellsUnderAttackByWhite);
 
 			return tempCellsClicked;
 		}
