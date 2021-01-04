@@ -1,6 +1,10 @@
+import Bishop from "./Bishop";
 import Piece from "./ChessPiece";
 import King from "./King";
+import Knight from "./Knight";
 import Pawn from "./Pawn";
+import Queen from "./Queen";
+import Rook from "./Rook";
 
 class ChessGame {
 	constructor() {
@@ -111,8 +115,78 @@ class ChessGame {
 		return tempCellsClicked;
 	};
 
-	handlePawnPromotion = (board, pawn) => {
-		if (!pawn.row === 0 || !pawn.row === 7) return;
+	handlePawnPromotion = pawn => {
+		// use DOM Manupulation to show the component to choose
+		// the piece to promote the pawn to
+		if (pawn.row === 0 || pawn.row === 7) return true;
+
+		return false;
+	};
+
+	changePawnToPiece = (board, promoteTo, color, rowf, colf) => {
+		console.log("changePawnToPiece color = ", color);
+		switch (promoteTo) {
+			case "queen":
+				board[rowf][colf] = new Queen(color, rowf, colf);
+				break;
+
+			case "rook":
+				board[rowf][colf] = new Rook(color, rowf, colf);
+				break;
+
+			case "bishop":
+				board[rowf][colf] = new Bishop(color, rowf, colf);
+				break;
+
+			case "knight":
+				board[rowf][colf] = new Knight(color, rowf, colf);
+				break;
+
+			default:
+				break;
+		}
+	};
+
+	promotePawn = (board, promoteTo, cellsClicked) => {
+		// pawn has already been moved but the opponent hasn't seen it
+
+		const { rows, cols } = cellsClicked;
+		const [rowi, rowf] = rows;
+		const [coli, colf] = cols;
+
+		if (board[rowf][colf] instanceof Pawn) {
+			let pawn = board[rowf][colf];
+			board[rowf][colf] = 0;
+			this.changePawnToPiece(board, promoteTo, pawn.color, rowf, colf);
+		} else {
+			// move the pawn for the opponent to see
+			let pawn = board[rowi][coli];
+			board[rowi][coli] = 0;
+			this.changePawnToPiece(board, promoteTo, pawn.color, rowf, colf);
+		}
+
+		// if the king was already in check, then set it to false as the current
+		// move must've blocked the check
+		if (this.whiteKingInCheck) {
+			this.whiteKingInCheck = false;
+			this.pieceCheckingWhiteKing = null;
+		}
+
+		if (this.blackKingInCheck) {
+			this.blackKingInCheck = false;
+			this.pieceCheckingBlackKing = null;
+		}
+
+		this.setKingParams();
+
+		// get moves and protecting moves of the piece after it has moved
+		// in order to set the 'attacked' squares
+		this.setInitiallyAttackedCells(board);
+
+		this.setKingInCheck(board, this.turn, board[rowf][colf]);
+
+		this.clearDots(board);
+		this.changeTurn();
 	};
 
 	setKingInCheck = (board, kingColor, lastMovedPiece) => {
@@ -307,7 +381,11 @@ class ChessGame {
 		this.setKingParams();
 
 		if (piece instanceof Pawn) {
-			// this.handlePawnPromotion(piece);
+			pawnPromoted = this.handlePawnPromotion(piece);
+
+			if (pawnPromoted) {
+				return { cellsClicked: this.cellsClicked, castlingDone, pawnPromoted };
+			}
 		}
 
 		// get moves and protecting moves of the piece after it has moved

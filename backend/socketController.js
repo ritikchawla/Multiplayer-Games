@@ -119,6 +119,12 @@ const socketController = (socket, io) => {
 		socket.to(socket.room).broadcast.emit("opponentCastled", { cellsClicked });
 	});
 
+	socket.on("pawnPromoted", ({ pieceName, cellsClicked }) => {
+		socket
+			.to(socket.room)
+			.broadcast.emit("opponentPromotedPawn", { pieceName, cellsClicked });
+	});
+
 	// ================== end for chess ===================================
 
 	// =================== for CHECKERS =================================================

@@ -10,6 +10,7 @@ import King from "../classes/chess/King";
 import Queen from "../classes/chess/Queen";
 import ChessGame from "../classes/chess/ChessGame";
 import GameOverComponent from "./GameOverComponent";
+import PawnPromotionDialog from "./PawnPromotionDialog";
 
 const game = new ChessGame();
 
@@ -71,6 +72,12 @@ const ChessBoard = () => {
 		winnerColor: null
 	});
 
+	const [showPawnPromotionDialog, setShowPawnPromotionDialog] = useState({
+		show: false,
+		cellsClicked: null,
+		pawnColor: null
+	});
+
 	useEffect(() => {
 		game.setInitiallyAttackedCells(board);
 	}, []);
@@ -85,6 +92,12 @@ const ChessBoard = () => {
 		socket.on("opponentCastled", ({ cellsClicked }) => {
 			let tempBoard = board.map(b => b);
 			game.movePiece(tempBoard, cellsClicked);
+			setBoard(tempBoard);
+		});
+
+		socket.on("opponentPromotedPawn", ({ pieceName, cellsClicked }) => {
+			let tempBoard = board.map(b => b);
+			game.promotePawn(tempBoard, pieceName, cellsClicked);
 			setBoard(tempBoard);
 		});
 
@@ -105,6 +118,22 @@ const ChessBoard = () => {
 		}
 	};
 
+	const handlePawnPromotion = pieceName => {
+		let { cellsClicked } = showPawnPromotionDialog;
+		let tempBoard = board.map(b => b);
+
+		console.log(tempBoard);
+
+		socket.emit("pawnPromoted", { pieceName, cellsClicked });
+
+		// the pawn has been moved at this point
+		game.promotePawn(tempBoard, pieceName, cellsClicked);
+
+		setBoard(tempBoard);
+
+		setShowPawnPromotionDialog({ show: false, cellsClicked: null, pawnColor: null });
+	};
+
 	const showMoves = (row, col) => {
 		if (!gameOver.gameOver) {
 			let tempBoard = board.map(b => b);
@@ -116,17 +145,27 @@ const ChessBoard = () => {
 				if (cellsClicked && cellsClicked.rows.length === 2) {
 					if (!castlingDone && !pawnPromoted)
 						socket.emit("movePlayed", { cellsClicked });
-					else if (castlingDone) {
+					if (castlingDone) {
 						socket.emit("castlingDone", { cellsClicked });
+					}
+					if (pawnPromoted) {
+						// the pawn has reached the other end of the board
+						// but hasn't yet been protomted and is still just a pawn
+						setShowPawnPromotionDialog({
+							show: true,
+							cellsClicked,
+							pawnColor:
+								tempBoard[cellsClicked.rows[1]][cellsClicked.cols[1]]
+									.color
+						});
 					}
 				}
 			}
 
+			console.log("setting board to temp board");
 			setBoard(tempBoard);
 
-			let isGameOver = game.isGameOver(board);
-
-			if (isGameOver) {
+			if (game.isGameOver(board)) {
 				let newGameOverObject = {
 					gameOver: true,
 					winnerColor: game.winner,
@@ -197,6 +236,13 @@ const ChessBoard = () => {
 					<GameOverComponent
 						winnerColor={gameOver.winnerColor}
 						winnerName={gameOver.winnerName}
+					/>
+				)}
+
+				{showPawnPromotionDialog.show && (
+					<PawnPromotionDialog
+						pawnColor={showPawnPromotionDialog.pawnColor}
+						handlePawnPromotion={handlePawnPromotion}
 					/>
 				)}
 				<div
